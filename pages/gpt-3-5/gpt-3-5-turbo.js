@@ -3,28 +3,29 @@ import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
 
-export default function Gpt35turbo() {
+export default function Gpt35turbo () {
   const [input, setInput] = useState('')
   const [result, setResult] = useState()
 
   async function onSubmit(event) {
     event.preventDefault()
+    console.log({prompt: input})
     try {
-      // const response = await fetch("/api/generate", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ prompt: input }),
-      // });
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: input }),
+      });
 
-      // const data = await response.json();
-      // if (response.status !== 200) {
-      //   throw data.error || new Error(`Request failed with status ${response.status}`);
-      // }
+      const data = await response.json();
+      if (response.status !== 200) {
+        throw data.error || new Error(`Request failed with status ${response.status}`);
+      }
 
-      // setResult(data.result);
-      setResult('It works')
+      setResult(data.result);
+      // setResult('It works')
       setInput('')
     } catch (error) {
       // Consider implementing your own error handling logic here
@@ -34,7 +35,7 @@ export default function Gpt35turbo() {
   }
 
   return (
-    <div className='flex justify-center'>
+    <div className='flex flex-col items-center'>
       <form onSubmit={onSubmit} className="form-control w-full max-w-xs">
         <FontAwesomeIcon icon={faRobot} />
         <label className="label">
