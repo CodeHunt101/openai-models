@@ -3,28 +3,31 @@ import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
 
-export default function Gpt35turbo () {
+export default function Gpt35turbo() {
   const [input, setInput] = useState('')
   const [result, setResult] = useState()
 
   async function onSubmit(event) {
     event.preventDefault()
-    console.log({prompt: input})
+    console.log({ prompt: input })
     try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
+      const response = await fetch('/api/generate', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt: input }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
+        throw (
+          data.error ||
+          new Error(`Request failed with status ${response.status}`)
+        )
       }
 
-      setResult(data.result);
+      setResult(data.result)
       // setResult('It works')
       setInput('')
     } catch (error) {
@@ -35,8 +38,8 @@ export default function Gpt35turbo () {
   }
 
   return (
-    <div className='flex flex-col items-center mt-5'>
-      <form onSubmit={onSubmit} className="form-control w-full max-w-sm">
+    <div className="flex flex-col items-center mt-5">
+      <form onSubmit={onSubmit} className="form-control w-full max-w-lg">
         <FontAwesomeIcon icon={faRobot} />
         <label className="label">
           <span className="label-text">Enter your prompt</span>
@@ -49,9 +52,11 @@ export default function Gpt35turbo () {
           className="input input-bordered w-full"
         />
         <label className="label"></label>
-        <button className="btn btn-primary">Generate response</button>
+        <div className="flex justify-center">
+          <button className="btn btn-primary">Generate response</button>
+        </div>
       </form>
-      <div className='max-w-md m-5'>{result}</div>
+      <div className="max-w-md m-5">{result}</div>
     </div>
   )
 }

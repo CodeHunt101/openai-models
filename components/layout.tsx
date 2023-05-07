@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
+import SwitchTheme from './switchTheme';
 
 type Props = {
   children?: ReactNode
@@ -7,7 +8,10 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <>
-      <main className='p-10'>{children}</main>
+      <main className='p-10'>
+        <SwitchTheme />
+        {children}
+      </main>
     </>
   );
 }
