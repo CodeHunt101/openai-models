@@ -13,7 +13,7 @@ const SwitchTheme = () => {
   };
 
   useEffect(() => {
-    const body = document.documentElement.setAttribute('data-theme', theme || '');
+    document.documentElement.setAttribute('data-theme', theme || '');
   }, [theme]);
 
 

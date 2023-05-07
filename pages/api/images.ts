@@ -5,7 +5,7 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export default async function completions(
+export default async function images(
   req: { body: { prompt: string } },
   res: {
     status: (status: number) => {
