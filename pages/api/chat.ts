@@ -1,3 +1,4 @@
+import { generatePrompt } from '@/utils/helpers'
 import { Configuration, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
@@ -58,11 +59,4 @@ export default async function chat(
       })
     }
   }
-}
-
-function generatePrompt(prompt: string) {
-  console.log({ prompt })
-  const capitalizedPrompt =
-    prompt[0].toUpperCase() + prompt.slice(1).toLowerCase()
-  return capitalizedPrompt
 }
