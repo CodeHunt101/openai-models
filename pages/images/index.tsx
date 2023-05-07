@@ -1,9 +1,8 @@
 import { FormEvent, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRobot } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import Form from '@/components/form'
 
-export default function Completions() {
+export default function Images() {
   const [input, setInput] = useState('')
   const [result, setResult] = useState('')
 
@@ -35,26 +34,12 @@ export default function Completions() {
     }
   }
 
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => setInput((e.target as HTMLFormElement).value)
+
   return (
     <div className="flex flex-col items-center mt-5">
       <h1>IMAGE</h1>
-      <form onSubmit={onSubmit} className="form-control w-full max-w-lg">
-        <FontAwesomeIcon icon={faRobot} />
-        <label className="label">
-          <span className="label-text">Enter your prompt</span>
-        </label>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          type="text"
-          placeholder="Type here"
-          className="input input-bordered w-full"
-        />
-        <label className="label"></label>
-        <div className="flex justify-center">
-          <button className="btn btn-primary">Generate response</button>
-        </div>
-      </form>
+      <Form input={input} handleChange={handleChange} handleSubmit={onSubmit}/>
       {result && <Image className="max-w-md m-5" alt={'image'} src={result} width={1024} height={1024}/>}
     </div>
   )
