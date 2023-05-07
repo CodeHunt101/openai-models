@@ -5,13 +5,11 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export default async function hey (
+export default async function hey(
   req: { body: { prompt: string } },
   res: {
-    status: (arg0: number) => {
-      (): any
-      new (): any
-      json: { (arg0: { error?: { message: string }; result?: any }): void }
+    status: (status: number) => {
+      json: { (arg0: { error?: { message: string }; result?: string }): void }
     }
   }
 ) {
@@ -40,7 +38,7 @@ export default async function hey (
   try {
     const chatCompletion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: generatePrompt2(prompt) }],
+      messages: [{ role: 'user', content: generatePrompt(prompt) }],
       temperature: 0.6,
     })
     res
@@ -62,20 +60,7 @@ export default async function hey (
   }
 }
 
-// function generatePrompt(animal) {
-//   const capitalizedAnimal =
-//     animal[0].toUpperCase() + animal.slice(1).toLowerCase()
-//   return `Suggest three names for an animal that is a superhero.
-
-// Animal: Cat
-// Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-// Animal: Dog
-// Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-// Animal: ${capitalizedAnimal}
-// Names:`
-// }
-
-function generatePrompt2(prompt: string) {
+function generatePrompt(prompt: string) {
   console.log({ prompt })
   const capitalizedPrompt =
     prompt[0].toUpperCase() + prompt.slice(1).toLowerCase()

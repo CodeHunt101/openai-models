@@ -35,8 +35,8 @@ export default function Gpt35turbo () {
   }
 
   return (
-    <div className='flex flex-col items-center'>
-      <form onSubmit={onSubmit} className="form-control w-full max-w-xs">
+    <div className='flex flex-col items-center mt-5'>
+      <form onSubmit={onSubmit} className="form-control w-full max-w-sm">
         <FontAwesomeIcon icon={faRobot} />
         <label className="label">
           <span className="label-text">Enter your prompt</span>
@@ -46,12 +46,12 @@ export default function Gpt35turbo () {
           onChange={(e) => setInput(e.target.value)}
           type="text"
           placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
+          className="input input-bordered w-full"
         />
         <label className="label"></label>
-        <button className="btn btn-primary">Geberate response</button>
+        <button className="btn btn-primary">Generate response</button>
       </form>
-      <div>{result}</div>
+      <div className='max-w-md m-5'>{result}</div>
     </div>
   )
 }
