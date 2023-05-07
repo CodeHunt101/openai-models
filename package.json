@@ -26,6 +26,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@types/wordwrap": "^1.0.1",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2"

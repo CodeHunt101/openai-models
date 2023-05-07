@@ -5,7 +5,7 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export default async function hey(
+export default async function completions(
   req: { body: { prompt: string } },
   res: {
     status: (status: number) => {
@@ -13,7 +13,6 @@ export default async function hey(
     }
   }
 ) {
-  console.log('here')
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
@@ -25,7 +24,6 @@ export default async function hey(
   }
 
   const prompt = req.body.prompt || ''
-  console.log(prompt)
   if (prompt.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -36,14 +34,13 @@ export default async function hey(
   }
 
   try {
-    const chatCompletion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: generatePrompt(prompt) }],
-      temperature: 0.6,
+    const image = await openai.createImage({
+      prompt: generatePrompt(prompt),
+      n: 1,
+      size: "1024x1024",
     })
-    res
-      .status(200)
-      .json({ result: chatCompletion.data.choices[0].message?.content })
+    res.status(200).json({ result: image.data.data[0].url })
+    console.log({ result: image.data.data[0].url })
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

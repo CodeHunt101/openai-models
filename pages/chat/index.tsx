@@ -1,17 +1,16 @@
-import Head from 'next/head'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
+// import wordwrap from 'wordwrap'
 
-export default function Gpt35turbo() {
+export default function Chat() {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState()
+  const [result, setResult] = useState('')
 
-  async function onSubmit(event) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault()
-    console.log({ prompt: input })
     try {
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,17 +27,19 @@ export default function Gpt35turbo() {
       }
 
       setResult(data.result)
-      // setResult('It works')
       setInput('')
-    } catch (error) {
+    } catch (error: any) {
       // Consider implementing your own error handling logic here
       console.error(error)
       alert(error.message)
     }
   }
 
+  // const formattedResult = wordwrap(80)(result || '')
+
   return (
     <div className="flex flex-col items-center mt-5">
+      <h1>CHAT</h1>
       <form onSubmit={onSubmit} className="form-control w-full max-w-lg">
         <FontAwesomeIcon icon={faRobot} />
         <label className="label">
@@ -56,7 +57,12 @@ export default function Gpt35turbo() {
           <button className="btn btn-primary">Generate response</button>
         </div>
       </form>
-      <div className="max-w-md m-5">{result}</div>
+      {result && <div className="max-w-md m-5">{result.split('\n').map((line, index)=> (
+        <div key={index}>
+          {line}
+          <br />
+        </div>
+      ))}</div>}
     </div>
   )
 }
