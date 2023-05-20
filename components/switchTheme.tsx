@@ -1,29 +1,33 @@
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 const SwitchTheme = () => {
-  const [theme, setTheme] = useState(typeof window !== "undefined" ? window.localStorage.getItem('theme') : '')  
-  typeof window !== "undefined" ? window.localStorage.setItem("theme", theme || '') : false;
+  const [theme, setTheme] = useState(() => {
+    const storedTheme =
+      typeof window !== 'undefined' && localStorage.getItem('theme')
+    return storedTheme ? storedTheme : 'wireframe'
+  })
+
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem('theme', theme)
+    document.documentElement.setAttribute('data-theme', theme)
+  }
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "wireframe" : "dark");
-  };
-
-  useEffect(() => {
-    window.document.documentElement.setAttribute('data-theme', theme || '');
-  }, [theme]);
-
+    setTheme((prevTheme) => (prevTheme === 'wireframe' ? 'dark' : 'wireframe'))
+    document.documentElement.setAttribute('data-theme', theme)
+  }
 
   return (
     <button className="btn btn-circle" onClick={toggleTheme}>
-      {theme === "dark" ? (
-        <FontAwesomeIcon icon={faMoon} />
-      ) : (
+      {theme === 'wireframe' ? (
         <FontAwesomeIcon icon={faSun} />
+      ) : (
+        <FontAwesomeIcon icon={faMoon} />
       )}
     </button>
-  );
-};
+  )
+}
 
-export default SwitchTheme;
+export default SwitchTheme
