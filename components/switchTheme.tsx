@@ -1,11 +1,9 @@
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const SwitchTheme = () => {
-  //we store the theme in localStorage to preserve the state on next visit with an initial theme of dark.
-  const [theme, setTheme] = useState(typeof window !== "undefined" ? window.localStorage.getItem('theme') : '')
-  
+  const [theme, setTheme] = useState(typeof window !== "undefined" ? window.localStorage.getItem('theme') : '')  
   typeof window !== "undefined" ? window.localStorage.setItem("theme", theme || '') : false;
 
   const toggleTheme = () => {
@@ -13,7 +11,7 @@ const SwitchTheme = () => {
   };
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme || '');
+    window.document.documentElement.setAttribute('data-theme', theme || '');
   }, [theme]);
 
 
