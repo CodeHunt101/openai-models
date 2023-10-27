@@ -19,7 +19,7 @@ export default function Chat() {
       alert(error.message)
     }
   }
-  const handleChange = (e: React.FormEvent<HTMLInputElement>) =>
+  const handleChange = (e: FormEvent<HTMLInputElement>) =>
     setInput((e.target as HTMLFormElement).value)
 
   return (
