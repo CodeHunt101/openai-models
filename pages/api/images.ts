@@ -1,5 +1,5 @@
 import { generatePrompt } from '@/utils/helpers'
-import { Configuration, OpenAIApi } from 'openai'
+import { Configuration, ImagesResponseDataInner, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,7 +10,12 @@ export default async function images(
   req: { body: { prompt: string } },
   res: {
     status: (status: number) => {
-      json: { (arg0: { error?: { message: string }; result?: string }): void }
+      json: {
+        (arg0: {
+          error?: { message: string }
+          result?: ImagesResponseDataInner[]
+        }): void
+      }
     }
   }
 ) {
@@ -38,9 +43,9 @@ export default async function images(
     const image = await openai.createImage({
       prompt: generatePrompt(prompt),
       n: 1,
-      size: "1024x1024",
+      size: '1024x1024',
     })
-    res.status(200).json({ result: image.data.data[0].url })
+    res.status(200).json({ result: image.data.data })
     console.log({ result: image.data.data[0].url })
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
@@ -57,4 +62,3 @@ export default async function images(
     }
   }
 }
-
