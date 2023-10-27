@@ -38,7 +38,7 @@ export default async function chat(
     const chatCompletion = await openai.createChatCompletion({
       model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.6,
+      temperature: 0.75,
     })
 
     res
