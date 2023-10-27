@@ -34,7 +34,7 @@ export default function Images() {
   return (
     <div className="flex flex-col items-center mt-5">
       <h1>IMAGE</h1>
-      <Form input={input} handleChange={handleChange} handleSubmit={onSubmit} />
+      <Form input={input} handleChange={handleChange} handleSubmit={onSubmit} loading={loading}/>
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {Array.isArray(result) && result.map((image, idx) => (
         <Image

@@ -10,22 +10,24 @@ import { useEffect, useState } from 'react'
 
 type FormProps = {
   input: string
+  loading: boolean
   handleChange: (event: React.FormEvent<HTMLInputElement>) => void
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }
 // const path = window.location.pathname
-const Form = ({ input, handleChange, handleSubmit }: FormProps) => {
+const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
   const [path, setPath] = useState('')
   useEffect(() => {
     setPath(window.location.pathname)
   }, [])
 
-  const defineIcon = (path: string) => ({
-        '/chat': <FontAwesomeIcon icon={faComments} />,
-        '/completions': <FontAwesomeIcon icon={faPenClip} />,
-        '/images': <FontAwesomeIcon icon={faImages} />,
-        '/audios': <FontAwesomeIcon icon={faFileAudio} />,
-      }[path])
+  const defineIcon = (path: string) =>
+    ({
+      '/chat': <FontAwesomeIcon icon={faComments} />,
+      '/completions': <FontAwesomeIcon icon={faPenClip} />,
+      '/images': <FontAwesomeIcon icon={faImages} />,
+      '/audios': <FontAwesomeIcon icon={faFileAudio} />,
+    }[path])
 
   return (
     <form onSubmit={handleSubmit} className="form-control w-full max-w-lg">
@@ -46,7 +48,7 @@ const Form = ({ input, handleChange, handleSubmit }: FormProps) => {
       />
       <label className="label"></label>
       <div className="flex justify-center">
-        <button className="btn btn-primary">Generate response</button>
+        <button className="btn btn-primary" disabled={loading}>Generate response</button>
       </div>
     </form>
   )
