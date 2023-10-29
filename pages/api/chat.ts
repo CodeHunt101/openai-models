@@ -1,4 +1,3 @@
-import { generatePrompt } from '@/utils/helpers'
 import { Configuration, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
@@ -38,14 +37,14 @@ export default async function chat(
     const chatCompletion = await openai.createChatCompletion({
       model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.75,
+      temperature: 0.8,
     })
 
-    res
-      .status(200)
-      .json({ result: chatCompletion.data.choices[0].message?.content })
-    console.log({ result: chatCompletion.data.choices[0].message?.content })
+    const result = chatCompletion.data.choices[0].message?.content
+    res.status(200).json({ result })
+    
   } catch (error: any) {
+
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
       console.error(error.response.status, error.response.data)
