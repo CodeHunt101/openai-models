@@ -65,58 +65,57 @@ export default async function visualAnalysis(req, res) {
     }
   }
 
-  const imageName = 'dad.jpeg';
-  // const imagePath = path.join(process.cwd(), imageName);
-  // const base64Image = encodeImage(imagePath);
-
   try {
     let filePath;
-
     if (req.method === 'POST') {
       const form = formidable({});
-      form.parse(req, (err, fields, files) => {
+      form.parse(req, async (err, fields, files) => {
+        const prompt = fields.prompt[0]; // Define prompt here
         const uploadedFile = files.file;
         filePath = uploadedFile[0].filepath;
-        fs.rename(filePath, `tempImage.jpeg`, (moveErr) => {
+        fs.rename(filePath, 'tempImage.jpeg', async (moveErr) => {
           if (moveErr) {
             console.error(moveErr);
             return res
               .status(500)
               .json({ error: 'Error moving the uploaded file' });
           }
+
+          const imagePath = path.join(process.cwd(), 'tempImage.jpeg');
+          const pollInterval = 1000; // 1 second
+          const pollTimeout = 60000; // 60 seconds
+
+          const filepath2 = await pollForFile(
+            imagePath,
+            pollInterval,
+            pollTimeout
+          );
+
+          const base64Image = encodeImage(filepath2);
+          console.log({ prompt });
+          const chatCompletion = await openai.createChatCompletion({
+            model: 'gpt-4-vision-preview',
+            messages: [
+              {
+                role: 'user',
+                ['content']: [
+                  { type: 'text', text: prompt },
+                  {
+                    type: 'image_url',
+                    image_url: `data:image/jpeg;base64,${base64Image}`,
+                  },
+                ],
+              },
+            ],
+            max_tokens: 300,
+          });
+          const result = chatCompletion.data.choices[0].message?.content;
+          console.log(result);
+          res.status(200).json({ result });
+          fs.unlinkSync(imagePath);
         });
       });
     }
-
-    const imagePath = path.join(process.cwd(), 'tempImage.jpeg');
-    console.log({ imagePath });
-    const pollInterval = 1000; // 1 second
-    const pollTimeout = 60000; // 60 seconds
-
-    const filepath2 = await pollForFile(imagePath, pollInterval, pollTimeout);
-
-    const base64Image = encodeImage(filepath2);
-    console.log({ base64Image });
-    const chatCompletion = await openai.createChatCompletion({
-      model: 'gpt-4-vision-preview',
-      messages: [
-        {
-          role: 'user',
-          ['content']: [
-            { type: 'text', text: "What's in this image?" },
-            {
-              type: 'image_url',
-              image_url: `data:image/jpeg;base64,${base64Image}`,
-            },
-          ],
-        },
-      ],
-      max_tokens: 300,
-    });
-    const result = chatCompletion.data.choices[0].message?.content;
-    console.log(result);
-    res.status(200).json({ result });
-    fs.unlinkSync(imagePath)
   } catch (error) {
     if (error.response) {
       console.error(error.response.status, error.response.data);
