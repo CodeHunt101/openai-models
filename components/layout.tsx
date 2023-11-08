@@ -6,7 +6,8 @@ import {
   faPenClip,
   faFileAudio,
 } from '@fortawesome/free-solid-svg-icons'
-import { faImages } from '@fortawesome/free-regular-svg-icons'
+import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons'
+import { faImages as solidFaImages } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type Props = {
@@ -33,8 +34,14 @@ export default function Layout({ children }: Props) {
       </li>
       <li>
         <Link href={'/images'}>
-          <FontAwesomeIcon icon={faImages} />
+          <FontAwesomeIcon icon={regularFaImages} />
           Images
+        </Link>
+      </li>
+      <li>
+        <Link href={'/visual-analysis'}>
+          <FontAwesomeIcon icon={solidFaImages} />
+          Visual Analysis
         </Link>
       </li>
       <li>

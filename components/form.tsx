@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 type FormProps = {
   input: string
   loading: boolean
-  handleChange: (event: React.FormEvent<HTMLInputElement>) => void
+  handleChange: (event: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>) => void
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }
 // const path = window.location.pathname
@@ -35,7 +35,7 @@ const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
       <label className="label">
         <span className="label-text">Enter your prompt</span>
       </label>
-      <input
+      {path === '/audios' ? <input
         value={input}
         onChange={handleChange}
         type={path === '/audios' ? 'file' : 'text'}
@@ -45,7 +45,7 @@ const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
             ? 'file-input w-full max-w-xs'
             : 'input input-bordered w-full'
         }
-      />
+      /> : <textarea value={input} onChange={handleChange} className="textarea textarea-primary textarea-lg"></textarea>}
       <label className="label"></label>
       <div className="flex justify-center">
         <button className="btn btn-primary" disabled={loading}>Generate response</button>

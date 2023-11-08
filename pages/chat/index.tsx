@@ -27,7 +27,7 @@ export default function Chat() {
       alert(error.message)
     }
   }
-  const handleChange = (e: FormEvent<HTMLInputElement>) =>
+  const handleChange = (e: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>) =>
     setInput((e.target as HTMLFormElement).value)
 
   return (
