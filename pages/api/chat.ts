@@ -34,13 +34,14 @@ export default async function chat(
   }
 
   try {
+    console.log({ prompt });
     const chatCompletion = await openai.createChatCompletion({
       model: 'gpt-4-1106-preview',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.8,
     })
-
     const result = chatCompletion.data.choices[0].message?.content
+    console.log({ result });
     res.status(200).json({ result })
     
   } catch (error: any) {

@@ -8,22 +8,25 @@ export default function VisualAnalysis() {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [input, setInput] = useState('');
+  const [selectedImageURL, setSelectedImageURL] = useState('');
 
   const onImageChange = (e: any) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
       const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif'];
       const fileExtension = file.name.split('.').pop().toLowerCase();
       if (allowedExtensions.includes(`.${fileExtension}`)) {
         // The selected file is one of the allowed types
         // You can now use the selected file as needed
-        setSelectedFile(file)
+        setSelectedFile(file);
+        setSelectedImageURL(URL.createObjectURL(file));
       } else {
-        alert('Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.');
+        alert(
+          'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
+        );
         e.target.value = null;
       }
     }
-    setSelectedFile(e.target.files[0]);
   };
 
   const onTextChange = (e: any) => {
@@ -39,7 +42,7 @@ export default function VisualAnalysis() {
       return;
     }
     const formData = new FormData();
-    console.log({selectedFile})
+    console.log({ selectedFile });
     formData.append('file', selectedFile);
     formData.append('prompt', input);
     try {
@@ -98,7 +101,16 @@ export default function VisualAnalysis() {
         </div>
       </form>
       {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && <TextResult result={result} />}
+      {result && (
+        <>
+          <img
+            src={selectedImageURL}
+            alt="Selected Image"
+            className="selected-image my-4"
+          />
+          <TextResult result={result} />
+        </>
+      )}
     </div>
   );
 }
