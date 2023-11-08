@@ -36,4 +36,5 @@ next-env.d.ts
 .env
 audio.m4a
 me.jpeg
+tempImage.jpeg
 .vscode

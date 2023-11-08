@@ -10,6 +10,19 @@ export default function VisualAnalysis() {
   const [input, setInput] = useState('');
 
   const onImageChange = (e: any) => {
+    const file = e.target.files[0]
+    if (file) {
+      const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      if (allowedExtensions.includes(`.${fileExtension}`)) {
+        // The selected file is one of the allowed types
+        // You can now use the selected file as needed
+        setSelectedFile(file)
+      } else {
+        alert('Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.');
+        e.target.value = null;
+      }
+    }
     setSelectedFile(e.target.files[0]);
   };
 
@@ -74,6 +87,7 @@ export default function VisualAnalysis() {
           type="file"
           name="image"
           className="file-input file-input-bordered w-full max-w-xs"
+          accept=".png, .jpeg, .jpg, .webp, .gif"
           onChange={onImageChange}
         />
         <label className="label"></label>
