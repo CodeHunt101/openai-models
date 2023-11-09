@@ -33,6 +33,8 @@ export default async function audios(req: NextApiRequest, res: NextApiResponse) 
     return
   }
 
+  console.log({ service: 'Audio transcription', date: new Date().toLocaleString() });
+
   const form = formidable({});
 
   form.parse(req, async (err, fields, files) => {
@@ -69,7 +71,7 @@ export default async function audios(req: NextApiRequest, res: NextApiResponse) 
       )
         
       const result = audioTranscription.data.text;
-      console.log(result);
+      console.log({result});
 
       res.status(200).json({ result });
     } catch (error: any) {

@@ -29,6 +29,8 @@ export default async function completions(
     });
   }
 
+  console.log({ service: 'Completions', date: new Date().toLocaleString(), prompt });
+
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',

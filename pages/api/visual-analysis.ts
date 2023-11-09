@@ -40,7 +40,7 @@ export default async function visualAnalysis(
       return;
     }
     const prompt = fields.prompt?.[0];
-    console.log({ prompt });
+    console.log({ service: 'Visual Analysis', date: new Date().toLocaleString(), prompt });
     // Verify prompt is not empty
     if (prompt?.trim().length === 0) {
       return res.status(400).json({

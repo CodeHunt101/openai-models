@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/api/audios.js"
+    "pages/api/audios.ts"
   ],
   "exclude": [
     "node_modules"

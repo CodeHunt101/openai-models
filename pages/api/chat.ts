@@ -24,9 +24,9 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
       },
     });
   }
+  console.log({ service: 'Chat', date: new Date().toLocaleString(), prompt });
 
   try {
-    console.log({ prompt });
     const chatCompletion = await openai.createChatCompletion({
       model: 'gpt-4-1106-preview',
       messages: [{ role: 'user', content: prompt }],

@@ -28,6 +28,7 @@ export default async function images(
       },
     });
   }
+  console.log({ service: 'Image generation', date: new Date().toLocaleString(), prompt });
 
   try {
     const image = await openai.createImage({
