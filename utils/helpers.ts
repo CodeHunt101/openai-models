@@ -46,15 +46,3 @@ export const encodeImage = (imagePath: string) => {
     return null;
   }
 };
-
-export const verifyUploadedFile = (files: formidable.Files<string>, res: NextApiResponse) => {
-  const uploadedFile = files.file;
-    if (!uploadedFile || !uploadedFile[0] || uploadedFile[0].size === 0 || uploadedFile[0].size > 2e+7) {
-      return res.status(400).json({
-        error: {
-          message: 'Please upload a valid file',
-        },
-      });
-    }
-  return uploadedFile[0].filepath
-}

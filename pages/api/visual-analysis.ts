@@ -1,8 +1,9 @@
 import { Configuration, OpenAIApi } from 'openai';
-import fs from 'fs';
+import fs, { PathLike } from 'fs';
 import path from 'path';
 import formidable from 'formidable';
-import {pollForFile, encodeImage, verifyUploadedFile} from '../../utils/helpers'
+import { pollForFile, encodeImage } from '../../utils/helpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 // Constants
 const POLL_INTERVAL = 1000; // 1 second
@@ -19,7 +20,10 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export default async function visualAnalysis(req, res) {
+export default async function visualAnalysis(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (!configuration.apiKey) {
     return res.status(500).json({
       error: {
@@ -32,36 +36,49 @@ export default async function visualAnalysis(req, res) {
   const form = formidable({});
   form.parse(req, async (err, fields, files) => {
     if (err) {
-      console.log(err)
-      return
+      console.log(err);
+      return;
     }
-    const prompt = fields.prompt[0];
+    const prompt = fields.prompt?.[0];
     console.log({ prompt });
     // Verify prompt is not empty
-    if (prompt.trim().length === 0) {
+    if (prompt?.trim().length === 0) {
       return res.status(400).json({
         error: {
           message: 'Please enter a valid prompt',
         },
       });
     }
-    const originalImagePath = verifyUploadedFile(files, res)
-    let imagePath
+    const uploadedFile = files.file;
+    if (
+      !uploadedFile ||
+      !uploadedFile[0] ||
+      uploadedFile[0].size === 0 ||
+      uploadedFile[0].size > 2e7
+    ) {
+      return res.status(400).json({
+        error: {
+          message: 'Please upload a valid file',
+        },
+      });
+    }
+    const originalImagePath = uploadedFile[0].filepath;
+    let imagePath;
     try {
       await fs.promises.rename(originalImagePath, 'tempImage.jpeg');
       imagePath = path.join(process.cwd(), 'tempImage.jpeg');
-      
+
       // Poll for the final image
-      const finalImagePath = await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT);
-      
-      const base64Image = encodeImage(finalImagePath);
+      await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT);
+
+      const base64Image = encodeImage(imagePath);
 
       const chatCompletion = await openai.createChatCompletion({
         model: 'gpt-4-vision-preview',
         messages: [
           {
             role: 'user',
-            content: [
+            ['content' as any]: [
               { type: 'text', text: prompt },
               {
                 type: 'image_url',
@@ -74,10 +91,9 @@ export default async function visualAnalysis(req, res) {
       });
       const result = chatCompletion.data.choices[0].message?.content;
       console.log(result);
-      
+
       res.status(200).json({ result });
-      
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         console.error(error.response.status, error.response.data);
         res.status(error.response.status).json(error.response.data);
@@ -92,8 +108,8 @@ export default async function visualAnalysis(req, res) {
     } finally {
       // Remove the temporary image file
       try {
-        await fs.promises.unlink(imagePath);
-      } catch (unlinkError) {
+        await fs.promises.unlink(imagePath as PathLike);
+      } catch (unlinkError: any) {
         console.error(`Error deleting image: ${unlinkError.message}`);
       }
     }
