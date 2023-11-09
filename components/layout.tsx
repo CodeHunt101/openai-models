@@ -35,19 +35,19 @@ export default function Layout({ children }: Props) {
       <li>
         <Link href={'/images'}>
           <FontAwesomeIcon icon={regularFaImages} />
-          Images
+          Image Generation
         </Link>
       </li>
       <li>
         <Link href={'/visual-analysis'}>
           <FontAwesomeIcon icon={solidFaImages} />
-          Visual Analysis
+          Image Analysis
         </Link>
       </li>
       <li>
         <Link href={'/audios'}>
           <FontAwesomeIcon icon={faFileAudio} />
-          Audios
+          Audios (In progress)
         </Link>
       </li>
     </ul>

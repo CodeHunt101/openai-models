@@ -16,10 +16,7 @@ export default function VisualAnalysis() {
       const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif'];
       const fileExtension = file.name.split('.').pop().toLowerCase();
       if (allowedExtensions.includes(`.${fileExtension}`)) {
-        // The selected file is one of the allowed types
-        // You can now use the selected file as needed
         setSelectedFile(file);
-        setSelectedImageURL(URL.createObjectURL(file));
       } else {
         alert(
           'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
@@ -60,7 +57,16 @@ export default function VisualAnalysis() {
           new Error(`Request failed with status ${response.status}`)
         );
       }
+      setSelectedImageURL(URL.createObjectURL(selectedFile));
       setResult(data.result);
+      setInput('');
+      // Reset the file input element here
+      const fileInput = document.getElementById(
+        'file-input'
+      ) as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     } catch (error: any) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -88,6 +94,7 @@ export default function VisualAnalysis() {
         ></textarea>
         <input
           type="file"
+          id="file-input"
           name="image"
           className="file-input file-input-bordered w-full max-w-xs"
           accept=".png, .jpeg, .jpg, .webp, .gif"
@@ -106,6 +113,7 @@ export default function VisualAnalysis() {
           <img
             src={selectedImageURL}
             alt="Selected Image"
+            width={480}
             className="selected-image my-4"
           />
           <TextResult result={result} />
