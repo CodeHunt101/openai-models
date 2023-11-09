@@ -1,8 +1,9 @@
 import { Configuration, OpenAIApi } from 'openai'
-import fs from 'fs'
+import fs, { PathLike } from 'fs'
 import path from 'path'
 import formidable from 'formidable';
 import { pollForFile } from '../../utils/helpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 
 
@@ -21,7 +22,7 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export default async function audios(req, res) {
+export default async function audios(req: NextApiRequest, res: NextApiResponse) {
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
@@ -63,7 +64,7 @@ export default async function audios(req, res) {
       const audioFile = fs.createReadStream(audioPath)
 
       const audioTranscription = await openai.createTranscription(
-        audioFile,
+        audioFile as unknown as File,
         'whisper-1'
       )
         
@@ -71,7 +72,7 @@ export default async function audios(req, res) {
       console.log(result);
 
       res.status(200).json({ result });
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         console.error(error.response.status, error.response.data);
         res.status(error.response.status).json(error.response.data);
@@ -86,8 +87,8 @@ export default async function audios(req, res) {
     } finally {
       // Remove the temporary audio file
       try {
-        await fs.promises.unlink(audioPath);
-      } catch (unlinkError) {
+        await fs.promises.unlink(audioPath as PathLike);
+      } catch (unlinkError: any) {
         console.error(`Error deleting audio: ${unlinkError.message}`);
       }
     }
