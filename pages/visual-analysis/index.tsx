@@ -32,7 +32,6 @@ export default function VisualAnalysis() {
 
   async function onSubmit(event: any) {
     event.preventDefault();
-    console.log(event);
     setLoading(true);
     if (!selectedFile) {
       // Handle case where no file is selected

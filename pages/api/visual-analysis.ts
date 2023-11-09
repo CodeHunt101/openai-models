@@ -64,9 +64,19 @@ export default async function visualAnalysis(
     }
     const originalImagePath = uploadedFile[0].filepath;
     let imagePath;
+    let fileType;
     try {
-      await fs.promises.rename(originalImagePath, 'tempImage.jpeg');
-      imagePath = path.join(process.cwd(), 'tempImage.jpeg');
+      // Get the file extension from the content type
+      const contentType = uploadedFile[0].mimetype;
+      const contentTypeParts = contentType?.split('/');
+      fileType = contentTypeParts?.[1];
+
+      // Ensure a valid file type is obtained
+      if (!fileType) {
+        throw new Error('Unable to determine file type');
+      }
+      await fs.promises.rename(originalImagePath, `tempImage.${fileType}`);
+      imagePath = path.join(process.cwd(), `tempImage.${fileType}`);
 
       // Poll for the final image
       await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT);
