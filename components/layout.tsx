@@ -47,7 +47,7 @@ export default function Layout({ children }: Props) {
       <li>
         <Link href={'/audios'}>
           <FontAwesomeIcon icon={faFileAudio} />
-          Audios (In progress)
+          Voice Transcription
         </Link>
       </li>
     </ul>
