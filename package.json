@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
+    "@types/formidable": "^3.4.5",
     "@types/wordwrap": "^1.0.1",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
