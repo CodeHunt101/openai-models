@@ -1,24 +1,13 @@
 import { generatePrompt } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Configuration, ImagesResponseDataInner, OpenAIApi } from 'openai';
+import OpenAI from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI();
 
 export default async function images(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!configuration.apiKey) {
-    return res.status(500).json({
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
-    });
-  }
 
   const prompt = req.body.prompt || '';
   if (prompt.trim().length === 0) {
@@ -31,13 +20,15 @@ export default async function images(
   console.log({ service: 'Image generation', date: new Date().toLocaleString(), prompt });
 
   try {
-    const image = await openai.createImage({
+    const image = await openai.images.generate({
+      model: "dall-e-3",
       prompt: generatePrompt(prompt),
       n: 1,
       size: '1024x1024',
+      quality: 'hd'
     });
-    res.status(200).json({ result: image.data.data });
-    console.log({ result: image.data.data[0].url });
+    res.status(200).json({ result: image.data });
+    console.log({ result: image.data[0].url });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

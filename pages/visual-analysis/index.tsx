@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import Form from '@/components/form';
 import TextResult from '@/components/textResult';
 import { submitRequest } from '@/utils/api';
+import Image from 'next/image';
 
 export default function VisualAnalysis() {
   const [result, setResult] = useState('');
@@ -34,7 +35,8 @@ export default function VisualAnalysis() {
     event.preventDefault();
     setLoading(true);
     if (!selectedFile) {
-      // Handle case where no file is selected
+      alert('Please add the file')
+      setLoading(false)
       return;
     }
     const formData = new FormData();
@@ -109,10 +111,11 @@ export default function VisualAnalysis() {
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {result && (
         <>
-          <img
+          <Image
             src={selectedImageURL}
             alt="Selected Image"
-            width={480}
+            width={512}
+            height={512}
             className="selected-image my-4"
           />
           <TextResult result={result} />

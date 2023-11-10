@@ -1,20 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai'
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI();
 
 export default async function chat(req: NextApiRequest, res: NextApiResponse) {
-  if (!configuration.apiKey) {
-    return res.status(500).json({
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
-    });
-  }
 
   const prompt = req.body.prompt || '';
   if (prompt.trim().length === 0) {
@@ -27,12 +16,12 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
   console.log({ service: 'Chat', date: new Date().toLocaleString(), prompt });
 
   try {
-    const chatCompletion = await openai.createChatCompletion({
+    const chatCompletion = await openai.chat.completions.create({
       model: 'gpt-4-1106-preview',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.8,
     });
-    const result = chatCompletion.data.choices[0].message?.content;
+    const result = chatCompletion.choices[0].message?.content;
     console.log({ result });
     res.status(200).json({ result });
   } catch (error: any) {

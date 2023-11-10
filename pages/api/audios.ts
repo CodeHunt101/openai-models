@@ -1,5 +1,5 @@
-import { Configuration, OpenAIApi } from 'openai'
-import fs, { PathLike } from 'fs'
+import OpenAI from 'openai'
+import fs from 'fs'
 import path from 'path'
 import formidable from 'formidable';
 import { pollForFile } from '../../utils/helpers';
@@ -17,21 +17,9 @@ export const config = {
   },
 };
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
+const openai = new OpenAI();
 
 export default async function audios(req: NextApiRequest, res: NextApiResponse) {
-  if (!configuration.apiKey) {
-    res.status(500).json({
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
-    })
-    return
-  }
 
   console.log({ service: 'Audio transcription', date: new Date().toLocaleString() });
 
@@ -56,21 +44,33 @@ export default async function audios(req: NextApiRequest, res: NextApiResponse) 
     }
     const originalAudioPath = uploadedFile[0].filepath;
     let audioPath
+    let fileType;
+    const currentTime = Date.now()
     try {
-      await fs.promises.rename(originalAudioPath, 'tempAudio.m4a');
-      audioPath = path.join(process.cwd(), 'tempAudio.m4a');
+      // Get the file extension from the content type
+      const contentType = uploadedFile[0].mimetype;
+      const contentTypeParts = contentType?.split('/');
+      fileType = contentTypeParts?.[1];
+
+      // Ensure a valid file type is obtained
+      if (!fileType) {
+        throw new Error('Unable to determine file type');
+      }
+      await fs.promises.rename(originalAudioPath, `tempAudio-${currentTime}.${fileType}`);
+      audioPath = path.join(process.cwd(), `tempAudio-${currentTime}.${fileType}`);
 
       // Poll for the final audio
       await pollForFile(audioPath, POLL_INTERVAL, POLL_TIMEOUT);
 
       const audioFile = fs.createReadStream(audioPath)
 
-      const audioTranscription = await openai.createTranscription(
-        audioFile as unknown as File,
-        'whisper-1'
+      const audioTranscription = await openai.audio.transcriptions.create({
+        file: audioFile,
+        model: 'whisper-1'
+      }
       )
         
-      const result = audioTranscription.data.text;
+      const result = audioTranscription.text;
       console.log({result});
 
       res.status(200).json({ result });
@@ -86,13 +86,14 @@ export default async function audios(req: NextApiRequest, res: NextApiResponse) 
           },
         });
       }
-    } finally {
-      // Remove the temporary audio file
-      try {
-        await fs.promises.unlink(audioPath as PathLike);
-      } catch (unlinkError: any) {
-        console.error(`Error deleting audio: ${unlinkError.message}`);
-      }
-    }
+    } 
+    // finally {
+    //   // Remove the temporary audio file
+    //   try {
+    //     await fs.promises.unlink(audioPath as PathLike);
+    //   } catch (unlinkError: any) {
+    //     console.error(`Error deleting audio: ${unlinkError.message}`);
+    //   }
+    // }
   })
 }

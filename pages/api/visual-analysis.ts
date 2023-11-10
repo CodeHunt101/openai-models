@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from "openai";
 import fs, { PathLike } from 'fs';
 import path from 'path';
 import formidable from 'formidable';
@@ -15,23 +15,12 @@ export const config = {
   },
 };
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI();
 
 export default async function visualAnalysis(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!configuration.apiKey) {
-    return res.status(500).json({
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
-    });
-  }
 
   const form = formidable({});
   form.parse(req, async (err, fields, files) => {
@@ -39,7 +28,7 @@ export default async function visualAnalysis(
       console.log(err);
       return;
     }
-    const prompt = fields.prompt?.[0];
+    const prompt = fields.prompt?.[0] as string;
     console.log({ service: 'Visual Analysis', date: new Date().toLocaleString(), prompt });
     // Verify prompt is not empty
     if (prompt?.trim().length === 0) {
@@ -83,23 +72,23 @@ export default async function visualAnalysis(
 
       const base64Image = encodeImage(imagePath);
 
-      const chatCompletion = await openai.createChatCompletion({
+      const chatCompletion = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
         messages: [
           {
             role: 'user',
-            ['content' as any]: [
+            content: [
               { type: 'text', text: prompt },
               {
                 type: 'image_url',
-                image_url: `data:image/jpeg;base64,${base64Image}`,
+                image_url: {url: `data:image/jpeg;base64,${base64Image}`},
               },
             ],
           },
         ],
         max_tokens: 600,
       });
-      const result = chatCompletion.data.choices[0].message?.content;
+      const result = chatCompletion.choices[0].message?.content;
       console.log(result);
 
       res.status(200).json({ result });

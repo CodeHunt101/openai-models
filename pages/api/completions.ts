@@ -1,24 +1,13 @@
 import { generatePrompt } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI();
 
 export default async function completions(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!configuration.apiKey) {
-    return res.status(500).json({
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
-    });
-  }
 
   const prompt = req.body.prompt || '';
   if (prompt.trim().length === 0) {
@@ -32,13 +21,13 @@ export default async function completions(
   console.log({ service: 'Completions', date: new Date().toLocaleString(), prompt });
 
   try {
-    const completion = await openai.createCompletion({
+    const completion = await openai.completions.create({
       model: 'text-davinci-003',
       prompt: generatePrompt(prompt),
       temperature: 0.6,
     });
-    res.status(200).json({ result: completion.data.choices[0].text });
-    console.log({ result: completion.data.choices[0].text });
+    res.status(200).json({ result: completion.choices[0].text });
+    console.log({ result: completion.choices[0].text });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

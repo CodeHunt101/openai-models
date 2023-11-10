@@ -33,7 +33,8 @@ export default function Audios() {
     event.preventDefault();
     setLoading(true);
     if (!selectedFile) {
-      // Handle case where no file is selected
+      alert('Please add the file')
+      setLoading(false)
       return;
     }
     const formData = new FormData();
@@ -44,8 +45,6 @@ export default function Audios() {
         method: 'POST',
         body: formData,
       });
-
-      console.log({ response });
 
       const data = await response.json();
       if (response.status !== 200) {
