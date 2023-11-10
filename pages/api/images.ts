@@ -1,4 +1,4 @@
-import { generatePrompt } from '@/utils/helpers';
+import { validatePromptFromJson } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from "openai";
 
@@ -9,26 +9,21 @@ export default async function images(
   res: NextApiResponse
 ) {
 
-  const prompt = req.body.prompt || '';
-  if (prompt.trim().length === 0) {
-    return res.status(400).json({
-      error: {
-        message: 'Please enter a valid prompt',
-      },
-    });
-  }
+  const prompt = validatePromptFromJson(req, res);
+  if (!prompt) return;
+  
   console.log({ service: 'Image generation', date: new Date().toLocaleString(), prompt });
 
   try {
     const image = await openai.images.generate({
       model: "dall-e-3",
-      prompt: generatePrompt(prompt),
+      prompt,
       n: 1,
       size: '1024x1024',
       quality: 'hd'
     });
-    res.status(200).json({ result: image.data });
     console.log({ result: image.data[0].url });
+    res.status(200).json({ result: image.data });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

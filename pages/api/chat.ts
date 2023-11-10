@@ -1,3 +1,4 @@
+import { validatePromptFromJson } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai'
 
@@ -5,14 +6,9 @@ const openai = new OpenAI();
 
 export default async function chat(req: NextApiRequest, res: NextApiResponse) {
 
-  const prompt = req.body.prompt || '';
-  if (prompt.trim().length === 0) {
-    return res.status(400).json({
-      error: {
-        message: 'Please enter a valid prompt',
-      },
-    });
-  }
+  const prompt = validatePromptFromJson(req, res);
+  if (!prompt) return;
+  
   console.log({ service: 'Chat', date: new Date().toLocaleString(), prompt });
 
   try {

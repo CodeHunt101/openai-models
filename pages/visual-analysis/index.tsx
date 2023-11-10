@@ -1,33 +1,32 @@
 import { FormEvent, useState } from 'react';
-import Form from '@/components/form';
 import TextResult from '@/components/textResult';
-import { submitRequest } from '@/utils/api';
 import Image from 'next/image';
 
 export default function VisualAnalysis() {
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [input, setInput] = useState('');
   const [selectedImageURL, setSelectedImageURL] = useState('');
 
-  const onImageChange = (e: any) => {
-    const file = e.target.files[0];
+  const onImageChange = (e: FormEvent<HTMLInputElement>) => {
+    const fileInput = e.target as HTMLInputElement;
+    const file = fileInput.files?.[0];
     if (file) {
       const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif'];
-      const fileExtension = file.name.split('.').pop().toLowerCase();
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
       if (allowedExtensions.includes(`.${fileExtension}`)) {
         setSelectedFile(file);
       } else {
         alert(
           'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
         );
-        e.target.value = null;
+        fileInput.value = '';
       }
     }
   };
 
-  const onTextChange = (e: any) => {
+  const onTextChange = (e: FormEvent<HTMLTextAreaElement>) => {
     setInput((e.target as HTMLFormElement).value);
   };
 
@@ -35,8 +34,8 @@ export default function VisualAnalysis() {
     event.preventDefault();
     setLoading(true);
     if (!selectedFile) {
-      alert('Please add the file')
-      setLoading(false)
+      alert('Please add the file');
+      setLoading(false);
       return;
     }
     const formData = new FormData();

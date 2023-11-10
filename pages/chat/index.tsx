@@ -23,7 +23,6 @@ export default function Chat() {
       }
       setInput('');
     } catch (error: any) {
-      // Consider implementing your own error handling logic here
       console.error(error);
       setResult('Some error occured, please try again');
       setLoading(false);

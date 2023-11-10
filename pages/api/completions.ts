@@ -1,4 +1,4 @@
-import { generatePrompt } from '@/utils/helpers';
+import { validatePromptFromJson } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
@@ -9,21 +9,15 @@ export default async function completions(
   res: NextApiResponse
 ) {
 
-  const prompt = req.body.prompt || '';
-  if (prompt.trim().length === 0) {
-    return res.status(400).json({
-      error: {
-        message: 'Please enter a valid prompt',
-      },
-    });
-  }
+  const prompt = validatePromptFromJson(req, res);
+  if (!prompt) return;
 
   console.log({ service: 'Completions', date: new Date().toLocaleString(), prompt });
 
   try {
     const completion = await openai.completions.create({
       model: 'text-davinci-003',
-      prompt: generatePrompt(prompt),
+      prompt,
       temperature: 0.6,
     });
     res.status(200).json({ result: completion.choices[0].text });

@@ -1,8 +1,13 @@
-import OpenAI from "openai";
+import OpenAI from 'openai';
 import fs, { PathLike } from 'fs';
 import path from 'path';
 import formidable from 'formidable';
-import { pollForFile, encodeImage } from '../../utils/helpers';
+import {
+  pollForFile,
+  encodeImage,
+  validatePromptFromForm,
+  isUploadedFileValid,
+} from '../../utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // Constants
@@ -21,39 +26,31 @@ export default async function visualAnalysis(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   const form = formidable({});
   form.parse(req, async (err, fields, files) => {
     if (err) {
       console.log(err);
       return;
     }
-    const prompt = fields.prompt?.[0] as string;
-    console.log({ service: 'Visual Analysis', date: new Date().toLocaleString(), prompt });
-    // Verify prompt is not empty
-    if (prompt?.trim().length === 0) {
-      return res.status(400).json({
-        error: {
-          message: 'Please enter a valid prompt',
-        },
-      });
-    }
+    const prompt = validatePromptFromForm(fields, res);
+    if (!prompt) return;
+
+    console.log({
+      service: 'Visual Analysis',
+      date: new Date().toLocaleString(),
+      prompt,
+    });
+
     const uploadedFile = files.file;
-    if (
-      !uploadedFile ||
-      !uploadedFile[0] ||
-      uploadedFile[0].size === 0 ||
-      uploadedFile[0].size > 2e7
-    ) {
-      return res.status(400).json({
-        error: {
-          message: 'Please upload a valid file',
-        },
-      });
-    }
+    if (!uploadedFile) return;
+
+    const uploadedFileValidity = isUploadedFileValid(uploadedFile, res);
+    if (!uploadedFileValidity) return;
+
     const originalImagePath = uploadedFile[0].filepath;
-    let imagePath;
-    let fileType;
+
+    let imagePath, fileType;
+
     try {
       // Get the file extension from the content type
       const contentType = uploadedFile[0].mimetype;
@@ -81,7 +78,7 @@ export default async function visualAnalysis(
               { type: 'text', text: prompt },
               {
                 type: 'image_url',
-                image_url: {url: `data:image/jpeg;base64,${base64Image}`},
+                image_url: { url: `data:image/jpeg;base64,${base64Image}` },
               },
             ],
           },

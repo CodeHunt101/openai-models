@@ -1,15 +1,64 @@
 import formidable from 'formidable';
 import fs from 'fs';
-import { NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export const generatePrompt = (prompt: string) => {
-  console.log({ prompt })
-  const capitalizedPrompt =
-    prompt[0].toUpperCase() + prompt.slice(1).toLowerCase()
-  return capitalizedPrompt
+export function validatePromptFromJson(
+  req: NextApiRequest,
+  res: NextApiResponse
+): string | null {
+  const prompt = req.body.prompt || '';
+  validatePrompt(prompt, res);
+  return prompt;
 }
 
-export const pollForFile = (filePath: string, interval: number, timeout: number) => {
+export function validatePromptFromForm(
+  fields: formidable.Fields<string>,
+  res: NextApiResponse
+): string | null {
+  const prompt = (fields.prompt?.[0] as string) || '';
+  validatePrompt(prompt, res);
+  return prompt;
+}
+
+export function validatePrompt(
+  prompt: string,
+  res: NextApiResponse
+): void | null {
+  if (prompt.trim().length === 0) {
+    res.status(400).json({
+      error: {
+        message: 'Please enter a valid prompt',
+      },
+    });
+    return null;
+  }
+}
+
+export const isUploadedFileValid = (
+  uploadedFile: formidable.File[],
+  res: NextApiResponse
+) => {
+  if (
+    !uploadedFile ||
+    !uploadedFile[0] ||
+    uploadedFile[0].size === 0 ||
+    uploadedFile[0].size > 2e7
+  ) {
+    res.status(400).json({
+      error: {
+        message: 'Please upload a valid file',
+      },
+    });
+    return false;
+  }
+  return true;
+};
+
+export const pollForFile = (
+  filePath: string,
+  interval: number,
+  timeout: number
+) => {
   const start = Date.now();
 
   return new Promise((resolve, reject) => {

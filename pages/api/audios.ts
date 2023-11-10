@@ -2,10 +2,8 @@ import OpenAI from 'openai'
 import fs from 'fs'
 import path from 'path'
 import formidable from 'formidable';
-import { pollForFile } from '../../utils/helpers';
+import { isUploadedFileValid, pollForFile } from '../../utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-
 
 // Constants
 const POLL_INTERVAL = 1000; // 1 second
@@ -25,27 +23,22 @@ export default async function audios(req: NextApiRequest, res: NextApiResponse) 
 
   const form = formidable({});
 
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req, async (err, _fields, files) => {
     if (err) {
       console.log(err);
       return;
     }
     const uploadedFile = files.file;
-    if (
-      !uploadedFile ||
-      !uploadedFile[0] ||
-      uploadedFile[0].size === 0
-    ) {
-      return res.status(400).json({
-        error: {
-          message: 'Please upload a valid file',
-        },
-      });
-    }
+    if (!uploadedFile) return;
+
+    const uploadedFileValidity = isUploadedFileValid(uploadedFile, res);
+    if (!uploadedFileValidity) return;
+
     const originalAudioPath = uploadedFile[0].filepath;
-    let audioPath
-    let fileType;
+    
+    let audioPath, fileType;
     const currentTime = Date.now()
+
     try {
       // Get the file extension from the content type
       const contentType = uploadedFile[0].mimetype;

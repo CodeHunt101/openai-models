@@ -32,7 +32,7 @@ export default function Images() {
   }
 
   const handleChange = (
-    e: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>
+    e: FormEvent<HTMLTextAreaElement> | FormEvent<HTMLInputElement>
   ) => setInput((e.target as HTMLFormElement).value);
 
   return (

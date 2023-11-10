@@ -4,11 +4,12 @@ import TextResult from '@/components/textResult';
 export default function Audios() {
   // const [input, setInput] = useState('')
   const [result, setResult] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const onAudioChange = (e: any) => {
-    const file = e.target.files[0];
+  const onAudioChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const fileInput = e.target as HTMLInputElement;
+    const file = fileInput.files?.[0];
     if (file) {
       const allowedExtensions = [
         '.mp3',
@@ -19,12 +20,12 @@ export default function Audios() {
         '.wav',
         '.webm',
       ];
-      const fileExtension = file.name.split('.').pop().toLowerCase();
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
       if (allowedExtensions.includes(`.${fileExtension}`)) {
         setSelectedFile(file);
       } else {
         alert('Invalid file type. Please select an audio file.');
-        e.target.value = null;
+        fileInput.value = '';
       }
     }
   };
