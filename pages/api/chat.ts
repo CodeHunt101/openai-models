@@ -9,7 +9,7 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
   const prompt = validatePromptFromJson(req, res);
   if (!prompt) return;
   
-  console.log({ service: 'Chat', date: new Date().toLocaleString(), prompt });
+  console.log({ service: 'Chat', date: new Date().toLocaleString('en-AU'), prompt });
 
   try {
     const chatCompletion = await openai.chat.completions.create({

@@ -19,7 +19,7 @@ const openai = new OpenAI();
 
 export default async function audios(req: NextApiRequest, res: NextApiResponse) {
 
-  console.log({ service: 'Audio transcription', date: new Date().toLocaleString() });
+  console.log({ service: 'Audio transcription', date: new Date().toLocaleString('en-AU') });
 
   const form = formidable({});
 

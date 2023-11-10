@@ -37,7 +37,7 @@ export default async function visualAnalysis(
 
     console.log({
       service: 'Visual Analysis',
-      date: new Date().toLocaleString(),
+      date: new Date().toLocaleString('en-AU'),
       prompt,
     });
 
