@@ -55,6 +55,7 @@ export default function Audios() {
         );
       }
       setResult(data.result);
+      setSelectedFile(null)
       // Reset the file input element here
       const fileInput = document.getElementById(
         'file-input'
