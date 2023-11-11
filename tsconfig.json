@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     "pages/api/audios.ts"
-  ],
+, "pages/api/auth/[auth0]/route.js"  ],
   "exclude": [
     "node_modules"
   ]
