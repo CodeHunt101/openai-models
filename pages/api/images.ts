@@ -12,7 +12,7 @@ export default async function images(
   const prompt = validatePromptFromJson(req, res);
   if (!prompt) return;
   
-  console.log({ service: 'Image generation', date: new Date().toLocaleString('en-AU'), prompt });
+  // console.log({ service: 'Image generation', date: new Date().toLocaleString('en-AU'), prompt });
 
   try {
     const image = await openai.images.generate({
