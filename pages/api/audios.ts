@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import fs from 'fs'
+import fs, { PathLike } from 'fs'
 import path from 'path'
 import formidable from 'formidable';
 import { isUploadedFileValid, pollForFile } from '../../utils/helpers';
@@ -38,6 +38,7 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
     
     let audioPath, fileType;
     const currentTime = Date.now()
+    const tempDirectory = '/tmp';
 
     try {
       // Get the file extension from the content type
@@ -49,8 +50,10 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
       if (!fileType) {
         throw new Error('Unable to determine file type');
       }
-      await fs.promises.rename(originalAudioPath, `tempAudio-${currentTime}.${fileType}`);
-      audioPath = path.join(process.cwd(), `tempAudio-${currentTime}.${fileType}`);
+      
+      const tempFilePath = path.join(tempDirectory, `tempAudio-${currentTime}.${fileType}`);
+      await fs.promises.rename(originalAudioPath, tempFilePath);
+      audioPath = tempFilePath
 
       // Poll for the final audio
       await pollForFile(audioPath, POLL_INTERVAL, POLL_TIMEOUT);
@@ -80,13 +83,13 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
         });
       }
     } 
-    // finally {
-    //   // Remove the temporary audio file
-    //   try {
-    //     await fs.promises.unlink(audioPath as PathLike);
-    //   } catch (unlinkError: any) {
-    //     console.error(`Error deleting audio: ${unlinkError.message}`);
-    //   }
-    // }
+    finally {
+      // Remove the temporary audio file
+      try {
+        await fs.promises.unlink(audioPath as PathLike);
+      } catch (unlinkError: any) {
+        console.error(`Error deleting audio: ${unlinkError.message}`);
+      }
+    }
   })
 }
