@@ -12,15 +12,15 @@ export default async function images(
   const prompt = validatePromptFromJson(req, res);
   if (!prompt) return;
   
-  // console.log({ service: 'Image generation', date: new Date().toLocaleString('en-AU'), prompt });
+  console.log({ service: 'Image generation', date: new Date().toLocaleString('en-AU'), prompt });
 
   try {
     const image = await openai.images.generate({
-      model: 'dall-e-2',
+      model: "dall-e-3",
       prompt,
       n: 1,
-      size: '256x256',
-      // quality: 'standard'
+      size: '1024x1024',
+      quality: 'hd'
     });
     console.log({ result: image.data[0].url });
     console.log(image.data)
@@ -28,11 +28,9 @@ export default async function images(
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
-      console.log(error)
       console.error(error.response.status, error.response.data);
       res.status(error.response.status).json(error.response.data);
     } else {
-      console.log(error)
       console.error(`Error with OpenAI API request: ${error.message}`);
       res.status(500).json({
         error: {
