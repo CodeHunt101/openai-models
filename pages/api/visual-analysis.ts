@@ -50,6 +50,7 @@ export default async function visualAnalysis(
     const originalImagePath = uploadedFile[0].filepath;
 
     let imagePath, fileType;
+    const tempDirectory = '/tmp';
 
     try {
       // Get the file extension from the content type
@@ -61,8 +62,9 @@ export default async function visualAnalysis(
       if (!fileType) {
         throw new Error('Unable to determine file type');
       }
-      await fs.promises.rename(originalImagePath, `tempImage.${fileType}`);
-      imagePath = path.join(process.cwd(), `tempImage.${fileType}`);
+      const tempFilePath = path.join(tempDirectory, `tempImage.${fileType}`);
+      await fs.promises.rename(originalImagePath, tempFilePath);
+      imagePath = tempFilePath;
 
       // Poll for the final image
       await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT);
