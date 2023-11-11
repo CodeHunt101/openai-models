@@ -28,7 +28,7 @@ export default function Layout({ children }: Props) {
         {isLoading && <div>Loading...</div>}
         {error && <div>{error.message}</div>}
         {!user ? (
-          <a href="/api/auth/login">Login</a>
+          <Link href="/api/auth/login">Login</Link>
         ) : (
           <>
             <ul className="menu bg-base-100 p-2 rounded-box flex md:flex-nowrap flex-row justify-center">
