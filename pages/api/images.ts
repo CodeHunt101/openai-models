@@ -23,6 +23,7 @@ export default async function images(
       quality: 'hd'
     });
     console.log({ result: image.data[0].url });
+    console.log(image.data)
     res.status(200).json({ result: image.data });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case

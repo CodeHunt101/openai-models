@@ -11,6 +11,7 @@ import { faImages as solidFaImages } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logout from '@/pages/logout';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import Login from '@/pages/login';
 
 type Props = {
   children?: ReactNode;
@@ -22,14 +23,18 @@ export default function Layout({ children }: Props) {
     <>
       <main className="p-10">
         <SwitchTheme />
-        <h1 className="my-7">
-          By <b>Harold Torres</b>
-        </h1>
-        {isLoading && <div>Loading...</div>}
-        {error && <div>{error.message}</div>}
-        {!user ? (
-          <Link href="/api/auth/login">Login</Link>
-        ) : (
+        <div className="flex flex-row my-7 justify-around">
+          <h1>
+            By <b>Harold Torres</b>
+          </h1>
+          {isLoading && (
+            <span className="loading loading-dots loading-lg"></span>
+          )}
+          {!user ? <Login/> : <Logout />}
+          {error && <div>{error.message}</div>}
+        </div>
+
+        {user && (
           <>
             <ul className="menu bg-base-100 p-2 rounded-box flex md:flex-nowrap flex-row justify-center">
               <li>
@@ -63,7 +68,6 @@ export default function Layout({ children }: Props) {
                 </Link>
               </li>
             </ul>
-            <Logout />
             {children}
           </>
         )}

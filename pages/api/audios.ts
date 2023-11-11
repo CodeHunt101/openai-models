@@ -17,7 +17,7 @@ export const config = {
 
 const openai = new OpenAI();
 
-export default async function audios(req: NextApiRequest, res: NextApiResponse) {
+export default function audios(req: NextApiRequest, res: NextApiResponse) {
 
   console.log({ service: 'Audio transcription', date: new Date().toLocaleString('en-AU') });
 
