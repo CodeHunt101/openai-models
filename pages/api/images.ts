@@ -16,11 +16,11 @@ export default async function images(
 
   try {
     const image = await openai.images.generate({
-      model: "dall-e-3",
+      model: 'dall-e-2',
       prompt,
       n: 1,
-      size: '1024x1024',
-      quality: 'hd'
+      size: '256x256',
+      // quality: 'standard'
     });
     console.log({ result: image.data[0].url });
     console.log(image.data)
