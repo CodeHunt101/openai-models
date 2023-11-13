@@ -44,7 +44,7 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
       // Get the file extension from the content type
       const contentType = uploadedFile[0].originalFilename;
       const contentTypeParts = contentType?.split('.');
-      fileType = contentTypeParts?.[1];
+      fileType = contentTypeParts?.pop();
 
       // Ensure a valid file type is obtained
       if (!fileType) {

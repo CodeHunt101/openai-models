@@ -54,9 +54,9 @@ export default async function visualAnalysis(
 
     try {
       // Get the file extension from the content type
-      const contentType = uploadedFile[0].mimetype;
-      const contentTypeParts = contentType?.split('/');
-      fileType = contentTypeParts?.[1];
+      const contentType = uploadedFile[0].originalFilename;
+      const contentTypeParts = contentType?.split('.');
+      fileType = contentTypeParts?.pop()
 
       // Ensure a valid file type is obtained
       if (!fileType) {
