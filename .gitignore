@@ -40,3 +40,5 @@ tempImage.jpeg
 .vscode
 openai-models*.*
 .env*
+*.cer
+*.pem

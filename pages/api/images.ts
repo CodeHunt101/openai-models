@@ -1,6 +1,6 @@
 import { validatePromptFromJson } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import OpenAI from "openai";
+import OpenAI from 'openai';
 
 const openai = new OpenAI();
 
@@ -8,22 +8,25 @@ export default async function images(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   const prompt = validatePromptFromJson(req, res);
   if (!prompt) return;
-  
-  console.log({ service: 'Image generation', date: new Date().toLocaleString('en-AU'), prompt });
+
+  console.log({
+    service: 'Image generation',
+    date: new Date().toLocaleString('en-AU'),
+    prompt,
+  });
 
   try {
     const image = await openai.images.generate({
-      model: "dall-e-3",
+      model: 'dall-e-3',
       prompt,
       n: 1,
       size: '1024x1024',
-      quality: 'hd'
+      quality: 'hd',
     });
     console.log({ result: image.data[0].url });
-    console.log(image.data)
+    console.log(image.data);
     res.status(200).json({ result: image.data });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case

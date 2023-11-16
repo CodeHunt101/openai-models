@@ -1,8 +1,11 @@
 import { validatePromptFromJson } from '@/utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai'
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const openai = new OpenAI();
+
+const messages: ChatCompletionMessageParam[] = []
 
 export default async function chat(req: NextApiRequest, res: NextApiResponse) {
 
@@ -11,14 +14,18 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
   
   console.log({ service: 'Chat', date: new Date().toLocaleString('en-AU'), prompt });
 
+  messages.push({role: 'user', content: prompt})
+
   try {
     const chatCompletion = await openai.chat.completions.create({
       model: 'gpt-4-1106-preview',
-      messages: [{ role: 'user', content: prompt }],
+      messages,
       temperature: 0.8,
     });
     const result = chatCompletion.choices[0].message?.content;
+    messages.push({role: 'assistant', content: result ?? ''})
     console.log({ result });
+
     res.status(200).json({ result });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
