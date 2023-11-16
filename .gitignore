@@ -38,3 +38,5 @@ audio.m4a
 me.jpeg
 tempImage.jpeg
 .vscode
+openai-models*.*
+.env*
