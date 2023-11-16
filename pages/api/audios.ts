@@ -1,6 +1,6 @@
-import OpenAI from 'openai'
-import fs, { PathLike } from 'fs'
-import path from 'path'
+import OpenAI from 'openai';
+import fs, { PathLike } from 'fs';
+import path from 'path';
 import formidable from 'formidable';
 import { isUploadedFileValid, pollForFile } from '../../utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -18,8 +18,10 @@ export const config = {
 const openai = new OpenAI();
 
 export default function audios(req: NextApiRequest, res: NextApiResponse) {
-
-  console.log({ service: 'Audio transcription', date: new Date().toLocaleString('en-AU') });
+  console.log({
+    service: 'Audio transcription',
+    date: new Date().toLocaleString('en-AU'),
+  });
 
   const form = formidable({});
 
@@ -35,9 +37,9 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
     if (!uploadedFileValidity) return;
 
     const originalAudioPath = uploadedFile[0].filepath;
-    
+
     let audioPath, fileType;
-    const currentTime = Date.now()
+    const currentTime = Date.now();
     const tempDirectory = '/tmp';
 
     try {
@@ -50,24 +52,26 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
       if (!fileType) {
         throw new Error('Unable to determine file type');
       }
-      
-      const tempFilePath = path.join(tempDirectory, `tempAudio-${currentTime}.${fileType}`);
+
+      const tempFilePath = path.join(
+        tempDirectory,
+        `tempAudio-${currentTime}.${fileType}`
+      );
       await fs.promises.rename(originalAudioPath, tempFilePath);
-      audioPath = tempFilePath
+      audioPath = tempFilePath;
 
       // Poll for the final audio
       await pollForFile(audioPath, POLL_INTERVAL, POLL_TIMEOUT);
 
-      const audioFile = fs.createReadStream(audioPath)
+      const audioFile = fs.createReadStream(audioPath);
 
       const audioTranscription = await openai.audio.transcriptions.create({
         file: audioFile,
-        model: 'whisper-1'
-      }
-      )
-        
+        model: 'whisper-1',
+      });
+
       const result = audioTranscription.text;
-      console.log({result});
+      console.log({ result });
 
       res.status(200).json({ result });
     } catch (error: any) {
@@ -82,8 +86,7 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
           },
         });
       }
-    } 
-    finally {
+    } finally {
       // Remove the temporary audio file
       try {
         await fs.promises.unlink(audioPath as PathLike);
@@ -91,5 +94,5 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
         console.error(`Error deleting audio: ${unlinkError.message}`);
       }
     }
-  })
+  });
 }

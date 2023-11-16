@@ -38,3 +38,6 @@ audio.m4a
 me.jpeg
 tempImage.jpeg
 .vscode
+.env*
+*.cer
+*.pem

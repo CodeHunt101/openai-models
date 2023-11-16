@@ -8,11 +8,14 @@ export default async function completions(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   const prompt = validatePromptFromJson(req, res);
   if (!prompt) return;
 
-  console.log({ service: 'Completions', date: new Date().toLocaleString('en-AU'), prompt });
+  console.log({
+    service: 'Completions',
+    date: new Date().toLocaleString('en-AU'),
+    prompt,
+  });
 
   try {
     const completion = await openai.completions.create({

@@ -9,6 +9,7 @@ import {
   isUploadedFileValid,
 } from '../../utils/helpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ChatCompletionMessageParam } from 'openai/resources';
 
 // Constants
 const POLL_INTERVAL = 1000; // 1 second
@@ -21,6 +22,8 @@ export const config = {
 };
 
 const openai = new OpenAI();
+
+const messages: ChatCompletionMessageParam[] = []
 
 export default async function visualAnalysis(
   req: NextApiRequest,
@@ -40,6 +43,8 @@ export default async function visualAnalysis(
       date: new Date().toLocaleString('en-AU'),
       prompt,
     });
+
+    messages.push({role: 'user', content: prompt})
 
     const uploadedFile = files.file;
     if (!uploadedFile) return;
@@ -88,6 +93,7 @@ export default async function visualAnalysis(
         max_tokens: 600,
       });
       const result = chatCompletion.choices[0].message?.content;
+      messages.push({role: 'assistant', content: result ?? ''})
       console.log(result);
 
       res.status(200).json({ result });
