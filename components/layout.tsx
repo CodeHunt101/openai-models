@@ -21,7 +21,7 @@ export default function Layout({ children }: Props) {
   const { user, error, isLoading } = useUser()
   return (
     <>
-      <main className="p-10 m-auto">
+      <main className="p-10 w-fit m-auto">
         <SwitchTheme />
         <div className="flex flex-row my-7 justify-around">
           <h1>
