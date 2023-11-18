@@ -1,41 +1,41 @@
-import { FormEvent, useState } from 'react';
-import Form from '@/components/form';
-import TextResult from '@/components/textResult';
-import { submitRequest } from '@/utils/api';
+import { FormEvent, useState } from 'react'
+import Form from '@/components/form'
+import TextResult from '@/components/textResult'
+import { submitRequest } from '@/utils/api'
 
 export default function Chat() {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState('')
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
   const [prompt, setPrompt] = useState('')
 
   async function onSubmit(event: FormEvent) {
-    event.preventDefault();
+    event.preventDefault()
     setPrompt('')
-    setResult('');
-    setLoading(true);
+    setResult('')
+    setLoading(true)
     try {
-      const result = await submitRequest('/api/chat', input);
+      const result = await submitRequest('/api/chat', input)
       if (result) {
         setPrompt(input)
-        setResult(result);
-        setLoading(false);
+        setResult(result)
+        setLoading(false)
       }
-      setInput('');
+      setInput('')
     } catch (error: any) {
-      console.error(error);
-      setResult('Some error occured, please try again');
-      setLoading(false);
-      alert(error.message);
+      console.error(error)
+      setResult('Some error occured, please try again')
+      setLoading(false)
+      alert(error.message)
     }
   }
   const handleChange = (
     e: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>
-  ) => setInput((e.target as HTMLFormElement).value);
+  ) => setInput((e.target as HTMLFormElement).value)
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h1>CHAT</h1>
+      <h2>CHAT</h2>
       <Form
         input={input}
         handleChange={handleChange}
@@ -43,12 +43,7 @@ export default function Chat() {
         loading={loading}
       />
       {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && (
-        <>
-          <p className="my-5">{prompt}</p>
-          <TextResult result={result} />
-        </>
-      )}
+      {result && <TextResult prompt={prompt} result={result} />}
     </div>
-  );
+  )
 }

@@ -1,15 +1,14 @@
-import { useState } from 'react';
-import TextResult from '@/components/textResult';
+import { useState } from 'react'
+import TextResult from '@/components/textResult'
 
 export default function Audios() {
-  // const [input, setInput] = useState('')
-  const [result, setResult] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const onAudioChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const fileInput = e.target as HTMLInputElement;
-    const file = fileInput.files?.[0];
+    const fileInput = e.target as HTMLInputElement
+    const file = fileInput.files?.[0]
     if (file) {
       const allowedExtensions = [
         '.mp3',
@@ -19,75 +18,72 @@ export default function Audios() {
         '.m4a',
         '.wav',
         '.webm',
-      ];
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      ]
+      const fileExtension = file.name.split('.').pop()?.toLowerCase()
       if (allowedExtensions.includes(`.${fileExtension}`)) {
-        setSelectedFile(file);
+        setSelectedFile(file)
       } else {
-        alert('Invalid file type. Please select an audio file.');
-        fileInput.value = '';
+        alert('Invalid file type. Please select an audio file.')
+        fileInput.value = ''
       }
     }
-  };
+  }
 
   async function onSubmit(event: any) {
-    event.preventDefault();
-    setLoading(true);
+    event.preventDefault()
+    setLoading(true)
     if (!selectedFile) {
       alert('Please add the file')
       setLoading(false)
-      return;
+      return
     }
-    const formData = new FormData();
-    console.log({ selectedFile });
-    formData.append('file', selectedFile);
+    const formData = new FormData()
+    console.log({ selectedFile })
+    formData.append('file', selectedFile)
     try {
       const response = await fetch('/api/audios', {
         method: 'POST',
         body: formData,
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       if (response.status !== 200) {
         throw (
           data.error ||
           new Error(`Request failed with status ${response.status}`)
-        );
+        )
       }
-      setResult(data.result);
+      setResult(data.result)
       setSelectedFile(null)
       // Reset the file input element here
       const fileInput = document.getElementById(
         'file-input'
-      ) as HTMLInputElement;
+      ) as HTMLInputElement
       if (fileInput) {
-        fileInput.value = '';
+        fileInput.value = ''
       }
     } catch (error: any) {
       // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
+      console.error(error)
+      alert(error.message)
     }
-    setLoading(false);
+    setLoading(false)
   }
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h1>TRANSCRIPT</h1>
+      <h2>VOICE TRANSCRIPTION</h2>
       <form
         method="post"
         onSubmit={onSubmit}
         className="form-control w-full max-w-lg"
         encType="multipart/form-data"
       >
-        <label className="label">
-          <span className="label-text">Upload audio</span>
-        </label>
         <input
           type="file"
           id="file-input"
           name="audio"
-          className="file-input file-input-bordered w-full max-w-xs"
+          className="file-input file-input-bordered w-full max-w-xs m-auto"
           accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm"
           onChange={onAudioChange}
         />
@@ -101,5 +97,5 @@ export default function Audios() {
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {result && <TextResult result={result} />}
     </div>
-  );
+  )
 }

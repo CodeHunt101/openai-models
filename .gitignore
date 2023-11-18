@@ -34,11 +34,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env
-audio.m4a
-me.jpeg
 tempImage.jpeg
 .vscode
 openai-models*.*
 .env*
 *.cer
 *.pem
+*.key

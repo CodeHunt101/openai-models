@@ -1,39 +1,42 @@
-import { FormEvent, useState } from 'react';
-import Form from '@/components/form';
-import TextResult from '@/components/textResult';
-import { submitRequest } from '@/utils/api';
+import { FormEvent, useState } from 'react'
+import Form from '@/components/form'
+import TextResult from '@/components/textResult'
+import { submitRequest } from '@/utils/api'
 
 export default function Completions() {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState('')
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [prompt, setPrompt] = useState('')
 
   async function onSubmit(event: FormEvent) {
-    event.preventDefault();
-    setResult('');
-    setLoading(true);
+    event.preventDefault()
+    setPrompt('')
+    setResult('')
+    setLoading(true)
     try {
-      const result = await submitRequest('/api/completions', input);
+      const result = await submitRequest('/api/completions', input)
       if (result) {
-        setResult(result);
-        setLoading(false);
+        setPrompt(input)
+        setResult(result)
+        setLoading(false)
       }
-      setInput('');
+      setInput('')
     } catch (error: any) {
-      console.error(error);
-      setResult('Some error occured, please try again');
-      setLoading(false);
-      alert(error.message);
+      console.error(error)
+      setResult('Some error occured, please try again')
+      setLoading(false)
+      alert(error.message)
     }
   }
 
   const handleChange = (
     e: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>
-  ) => setInput((e.target as HTMLFormElement).value);
+  ) => setInput((e.target as HTMLFormElement).value)
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h1>COMPLETIONS</h1>
+      <h2>COMPLETIONS</h2>
       <Form
         input={input}
         handleChange={handleChange}
@@ -41,7 +44,7 @@ export default function Completions() {
         loading={loading}
       />
       {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && <TextResult result={result} />}
+      {result && <TextResult prompt={prompt} result={result} />}
     </div>
-  );
+  )
 }

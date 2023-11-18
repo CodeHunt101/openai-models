@@ -1,83 +1,85 @@
-import { FormEvent, useState } from 'react';
-import TextResult from '@/components/textResult';
-import Image from 'next/image';
+import { FormEvent, useState } from 'react'
+import TextResult from '@/components/textResult'
+import Image from 'next/image'
 
 export default function VisualAnalysis() {
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [input, setInput] = useState('');
-  const [selectedImageURL, setSelectedImageURL] = useState('');
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [input, setInput] = useState('')
+  const [selectedImageURL, setSelectedImageURL] = useState('')
+  const [prompt, setPrompt] = useState('')
 
   const onImageChange = (e: FormEvent<HTMLInputElement>) => {
-    const fileInput = e.target as HTMLInputElement;
-    const file = fileInput.files?.[0];
+    const fileInput = e.target as HTMLInputElement
+    const file = fileInput.files?.[0]
     if (file) {
-      const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif'];
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif']
+      const fileExtension = file.name.split('.').pop()?.toLowerCase()
       if (allowedExtensions.includes(`.${fileExtension}`)) {
-        setSelectedFile(file);
+        setSelectedFile(file)
       } else {
         alert(
           'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
-        );
-        fileInput.value = '';
+        )
+        fileInput.value = ''
       }
     }
-  };
+  }
 
   const onTextChange = (e: FormEvent<HTMLTextAreaElement>) => {
-    setInput((e.target as HTMLFormElement).value);
-  };
+    setInput((e.target as HTMLFormElement).value)
+  }
 
   async function onSubmit(event: any) {
-    event.preventDefault();
-    setLoading(true);
+    event.preventDefault()
+    setLoading(true)
     if (!selectedFile) {
-      alert('Please add the file');
-      setLoading(false);
-      return;
+      alert('Please add the file')
+      setLoading(false)
+      return
     }
-    const formData = new FormData();
-    console.log({ selectedFile });
-    formData.append('file', selectedFile);
-    formData.append('prompt', input);
+    const formData = new FormData()
+    console.log({ selectedFile })
+    formData.append('file', selectedFile)
+    formData.append('prompt', input)
     try {
       const response = await fetch('/api/visual-analysis', {
         method: 'POST',
         body: formData,
-      });
+      })
 
-      console.log({ response });
+      console.log({ response })
 
-      const data = await response.json();
+      const data = await response.json()
       if (response.status !== 200) {
         throw (
           data.error ||
           new Error(`Request failed with status ${response.status}`)
-        );
+        )
       }
-      setSelectedImageURL(URL.createObjectURL(selectedFile));
-      setResult(data.result);
-      setInput('');
+      setSelectedImageURL(URL.createObjectURL(selectedFile))
+      setPrompt(input)
+      setResult(data.result)
+      setInput('')
       // Reset the file input element here
       const fileInput = document.getElementById(
         'file-input'
-      ) as HTMLInputElement;
+      ) as HTMLInputElement
       if (fileInput) {
-        fileInput.value = '';
+        fileInput.value = ''
       }
     } catch (error: any) {
       // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
+      console.error(error)
+      alert(error.message)
     }
-    setLoading(false);
+    setLoading(false)
   }
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h1>VISUAL ANALYSIS</h1>
+      <h2>VISUAL ANALYSIS</h2>
       <form
         method="post"
         onSubmit={onSubmit}
@@ -117,9 +119,9 @@ export default function VisualAnalysis() {
             height={512}
             className="selected-image my-4"
           />
-          <TextResult result={result} />
+          <TextResult prompt={prompt} result={result} />
         </>
       )}
     </div>
-  );
+  )
 }

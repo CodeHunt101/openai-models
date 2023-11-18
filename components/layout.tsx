@@ -1,27 +1,27 @@
-import type { ReactNode } from 'react';
-import SwitchTheme from './switchTheme';
-import Link from 'next/link';
+import type { ReactNode } from 'react'
+import SwitchTheme from './switchTheme'
+import Link from 'next/link'
 import {
   faComments,
   faPenClip,
   faFileAudio,
-} from '@fortawesome/free-solid-svg-icons';
-import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons';
-import { faImages as solidFaImages } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Logout from '@/pages/logout';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import Login from '@/pages/login';
+} from '@fortawesome/free-solid-svg-icons'
+import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons'
+import { faImages as solidFaImages } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Logout from '@/pages/logout'
+import { useUser } from '@auth0/nextjs-auth0/client'
+import Login from '@/pages/login'
 
 type Props = {
-  children?: ReactNode;
-};
+  children?: ReactNode
+}
 
 export default function Layout({ children }: Props) {
-  const { user, error, isLoading } = useUser();
+  const { user, error, isLoading } = useUser()
   return (
     <>
-      <main className="p-10">
+      <main className="p-10 m-auto">
         <SwitchTheme />
         <div className="flex flex-row my-7 justify-around">
           <h1>
@@ -30,7 +30,7 @@ export default function Layout({ children }: Props) {
           {isLoading && (
             <span className="loading loading-dots loading-lg"></span>
           )}
-          {!user ? <Login/> : <Logout />}
+          {!user ? <Login /> : <Logout />}
           {error && <div>{error.message}</div>}
         </div>
 
@@ -68,10 +68,10 @@ export default function Layout({ children }: Props) {
                 </Link>
               </li>
             </ul>
-            {children}
+            <div className="prose m-auto">{children}</div>
           </>
         )}
       </main>
     </>
-  );
+  )
 }
