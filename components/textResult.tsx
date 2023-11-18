@@ -14,7 +14,7 @@ const TextResult = ({ messages }: TextResultProps) => {
         {messages.map(({ user, assistant }, index) => (
           <div
             key={index}
-            className="card my-2 w-full shadow-lg self-start bg-neutral text-primary-content"
+            className="card my-2 w-full shadow-lg self-start bg-primary"
           >
             <div className="card-body">
               {

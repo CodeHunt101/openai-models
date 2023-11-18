@@ -6,7 +6,7 @@ const SwitchTheme = () => {
   const [theme, setTheme] = useState(() => {
     const storedTheme =
       typeof window !== 'undefined' && localStorage.getItem('theme')
-    return storedTheme ? storedTheme : 'wireframe'
+    return storedTheme ? storedTheme : 'cupcake'
   })
 
   if (typeof window !== 'undefined') {
@@ -15,7 +15,7 @@ const SwitchTheme = () => {
   }
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'wireframe' ? 'dark' : 'wireframe'))
+    setTheme((prevTheme) => (prevTheme === 'cupcake' ? 'dark' : 'cupcake'))
     document.documentElement.setAttribute('data-theme', theme)
   }
 
