@@ -3,7 +3,7 @@ import Form from '@/components/form'
 import TextResult from '@/components/textResult'
 import { submitRequest } from '@/utils/api'
 import { mapChatArray } from '@/utils/utils'
-import { Message } from '../types/types'
+import { Message } from '../../types/types'
 
 export default function Chat() {
   const [input, setInput] = useState('')

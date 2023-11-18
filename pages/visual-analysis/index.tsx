@@ -3,7 +3,7 @@ import TextResult from '@/components/textResult'
 import Image from 'next/image'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { mapChatArray } from '@/utils/utils'
-import { Message } from '../types/types'
+import { Message } from '../../types/types'
 
 export default function VisualAnalysis() {
   const [loading, setLoading] = useState(false)

@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
-import { Message } from '@/pages/types/types'
+import { Message } from '@/types/types'
 
 type TextResultProps = {
   messages: Message[] | string

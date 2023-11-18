@@ -1,4 +1,4 @@
-import { Message } from '@/pages/types/types'
+import { Message } from '@/types/types'
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 
 export const mapChatArray = (
