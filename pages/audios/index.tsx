@@ -95,7 +95,7 @@ export default function Audios() {
         </div>
       </form>
       {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && <TextResult result={result} />}
+      {result && <TextResult messages={result} />}
     </div>
   )
 }

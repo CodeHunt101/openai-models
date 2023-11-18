@@ -1,49 +1,57 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useCallback } from 'react'
 import Form from '@/components/form'
 import TextResult from '@/components/textResult'
 import { submitRequest } from '@/utils/api'
+import { mapChatArray } from '@/utils/utils'
+import { Message } from '../types/types'
 
 export default function Chat() {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const [prompt, setPrompt] = useState('')
+  const [messages, setMessages] = useState<Message[] | string>([])
 
-  async function onSubmit(event: FormEvent) {
-    event.preventDefault()
-    setPrompt('')
-    setResult('')
-    setLoading(true)
-    try {
-      const result = await submitRequest('/api/chat', input)
-      if (result) {
-        setPrompt(input)
-        setResult(result)
+  const handleChange = useCallback(
+    (
+      e:
+        | React.FormEvent<HTMLTextAreaElement>
+        | React.FormEvent<HTMLInputElement>
+    ) => {
+      setInput((e.target as HTMLFormElement).value)
+    },
+    []
+  )
+
+  const onSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault()
+      setLoading(true)
+      try {
+        const apiResult = await submitRequest('/api/chat', input)
+        setMessages(
+          mapChatArray(apiResult) || 'No result returned from the API'
+        )
+      } catch (error) {
+        console.error(error)
+        setMessages('Some error occurred, please try again.')
+      } finally {
         setLoading(false)
+        setInput('')
       }
-      setInput('')
-    } catch (error: any) {
-      console.error(error)
-      setResult('Some error occured, please try again')
-      setLoading(false)
-      alert(error.message)
-    }
-  }
-  const handleChange = (
-    e: React.FormEvent<HTMLTextAreaElement> | React.FormEvent<HTMLInputElement>
-  ) => setInput((e.target as HTMLFormElement).value)
+    },
+    [input]
+  )
 
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>CHAT</h2>
+      {loading && <span className="loading loading-dots loading-lg"></span>}
+      {messages.length > 0 && <TextResult messages={messages} />}
       <Form
         input={input}
         handleChange={handleChange}
         handleSubmit={onSubmit}
         loading={loading}
       />
-      {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && <TextResult prompt={prompt} result={result} />}
     </div>
   )
 }

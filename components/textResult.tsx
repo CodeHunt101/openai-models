@@ -1,29 +1,44 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
+import { Message } from '@/pages/types/types'
 
 type TextResultProps = {
-  prompt?: string
-  result: string
+  messages: Message[] | string
 }
 
-const TextResult = ({ prompt, result }: TextResultProps) => {
-  return (
-    <div className="self-start">
-      {prompt && (
-        <div className="max-w-xl m-5">
-          <h3>User:</h3>
-          <p className="my-5">{prompt}</p>
-        </div>
-      )}
-      <div className="max-w-xl m-5">
-        <h3>Assistant:</h3>
-        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-          {result}
-        </ReactMarkdown>
-      </div>
-    </div>
-  )
+const TextResult = ({ messages }: TextResultProps) => {
+  if (Array.isArray(messages)) {
+    return (
+      <>
+        {messages.map(({ user, assistant }, index) => (
+          <div
+            key={index}
+            className="card my-2 w-full shadow-lg self-start bg-neutral text-primary-content"
+          >
+            <div className="card-body">
+              {
+                <div className="max-w-xl">
+                  <h3 className="card-title">User:</h3>
+                  <p className="my-1">{user}</p>
+                </div>
+              }
+              {
+                <div className="max-w-xl">
+                  <h3 className="card-title">Assistant:</h3>
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                    {assistant}
+                  </ReactMarkdown>
+                </div>
+              }
+            </div>
+          </div>
+        ))}
+      </>
+    )
+  }
+
+  return <p>{messages}</p>
 }
 
 export default TextResult

@@ -23,7 +23,7 @@ export default function Layout({ children }: Props) {
     <>
       <main className="p-10 w-fit m-auto">
         <SwitchTheme />
-        <div className="flex flex-row my-7 justify-around">
+        <div className="flex flex-row gap-4 my-7 justify-around">
           <h1>
             By <b>Harold Torres</b>
           </h1>
@@ -41,12 +41,6 @@ export default function Layout({ children }: Props) {
                 <Link href={'/chat'}>
                   <FontAwesomeIcon icon={faComments} />
                   Chats
-                </Link>
-              </li>
-              <li>
-                <Link href={'/completions'}>
-                  <FontAwesomeIcon icon={faPenClip} />
-                  Completions
                 </Link>
               </li>
               <li>

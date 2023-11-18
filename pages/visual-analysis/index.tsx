@@ -1,14 +1,16 @@
 import { FormEvent, useState } from 'react'
 import TextResult from '@/components/textResult'
 import Image from 'next/image'
+import { ChatCompletionMessageParam } from 'openai/resources'
+import { mapChatArray } from '@/utils/utils'
+import { Message } from '../types/types'
 
 export default function VisualAnalysis() {
-  const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [input, setInput] = useState('')
   const [selectedImageURL, setSelectedImageURL] = useState('')
-  const [prompt, setPrompt] = useState('')
+  const [messages, setMessages] = useState<Message[] | string>([])
 
   const onImageChange = (e: FormEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement
@@ -49,8 +51,6 @@ export default function VisualAnalysis() {
         body: formData,
       })
 
-      console.log({ response })
-
       const data = await response.json()
       if (response.status !== 200) {
         throw (
@@ -59,8 +59,9 @@ export default function VisualAnalysis() {
         )
       }
       setSelectedImageURL(URL.createObjectURL(selectedFile))
-      setPrompt(input)
-      setResult(data.result)
+      setMessages(
+        mapChatArray(data.result) || 'No result returned from the API'
+      )
       setInput('')
       // Reset the file input element here
       const fileInput = document.getElementById(
@@ -80,6 +81,19 @@ export default function VisualAnalysis() {
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>VISUAL ANALYSIS</h2>
+      {loading && <span className="loading loading-dots loading-lg"></span>}
+      {messages.length > 0 && (
+        <>
+          <Image
+            src={selectedImageURL}
+            alt="Selected Image"
+            width={512}
+            height={512}
+            className="selected-image my-4"
+          />
+          <TextResult messages={messages} />
+        </>
+      )}
       <form
         method="post"
         onSubmit={onSubmit}
@@ -109,19 +123,6 @@ export default function VisualAnalysis() {
           </button>
         </div>
       </form>
-      {loading && <span className="loading loading-dots loading-lg"></span>}
-      {result && (
-        <>
-          <Image
-            src={selectedImageURL}
-            alt="Selected Image"
-            width={512}
-            height={512}
-            className="selected-image my-4"
-          />
-          <TextResult prompt={prompt} result={result} />
-        </>
-      )}
     </div>
   )
 }
