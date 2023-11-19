@@ -42,6 +42,12 @@ export default async function visualAnalysis(
 
     const user = (fields.user?.[0] as string) || ''
 
+    if (fields.getMessages?.[0]) {
+      const filteredMessages = filterMessagesByUser(user, messagesWithUser)
+      res.status(200).json({ result: filteredMessages.slice(-10) })
+      return
+    }
+
     if (fields.deleteMessages?.[0]) {
       messagesWithUser = messagesWithUser.filter(
         (message) => message.user !== user

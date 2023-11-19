@@ -15,8 +15,16 @@ let messagesWithUser: MessageWithAuthUser[] = []
 
 export default async function chat(req: NextApiRequest, res: NextApiResponse) {
   const user = req.body.user
+  if (req.body.getMessages) {
+    const filteredMessages = filterMessagesByUser(user, messagesWithUser)
+    res.status(200).json({ result: filteredMessages.slice(-10) })
+    return
+  }
+
   if (req.body.deleteMessages) {
-    messagesWithUser = messagesWithUser.filter(message => message.user !== user)
+    messagesWithUser = messagesWithUser.filter(
+      (message) => message.user !== user
+    )
     res.status(200).json({ message: 'removed messages' })
     return
   }

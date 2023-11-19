@@ -15,7 +15,7 @@ export default function Images() {
     setResult('')
     setLoading(true)
     try {
-      const result = await submitRequest('/api/images', input)
+      const result = await submitRequest('/api/images', null, input)
       if (result) {
         setPrompt(input)
         setResult(result)

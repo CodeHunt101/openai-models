@@ -21,7 +21,7 @@ const SwitchTheme = () => {
 
   return (
     <button className="btn btn-circle" onClick={toggleTheme}>
-      {theme === 'wireframe' ? (
+      {theme === 'cupcake' ? (
         <FontAwesomeIcon icon={faSun} />
       ) : (
         <FontAwesomeIcon icon={faMoon} />

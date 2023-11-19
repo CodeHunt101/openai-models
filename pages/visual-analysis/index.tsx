@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import TextResult from '@/components/textResult'
 import Image from 'next/image'
 import { mapChatArray } from '@/utils/utils'
@@ -12,6 +12,29 @@ export default function VisualAnalysis() {
   const [selectedImageURL, setSelectedImageURL] = useState('')
   const [messages, setMessages] = useState<Message[] | string>([])
   const { user } = useUser()
+
+  useEffect(() => {
+    const formData = new FormData()
+    formData.append('user', user?.email || '')
+    formData.append('getMessages', true.toString())
+    const getMessages = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/visual-analysis', {
+          method: 'POST',
+          body: formData,
+        })
+
+        const { result } = await response.json()
+        setMessages(mapChatArray(result))
+      } catch (error) {
+        console.error('Error fetching messages:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    getMessages()
+  }, [user?.email])
 
   const onImageChange = (e: FormEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement
@@ -101,19 +124,24 @@ export default function VisualAnalysis() {
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>VISUAL ANALYSIS</h2>
-      <button onClick={handleNewThread} className="btn btn-accent my-2">
-        Start New Thread
-      </button>
+      <p>Images will not be saved</p>
+      {messages.length > 0 && (
+        <button onClick={handleNewThread} className="btn btn-accent my-2">
+          Start New Thread
+        </button>
+      )}
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {messages.length > 0 && (
         <>
-          <Image
-            src={selectedImageURL}
-            alt="Selected Image"
-            width={512}
-            height={512}
-            className="selected-image my-4"
-          />
+          {selectedImageURL && (
+            <Image
+              src={selectedImageURL}
+              alt="Selected Image"
+              width={512}
+              height={512}
+              className="selected-image my-4"
+            />
+          )}
           <TextResult messages={messages} />
         </>
       )}
@@ -141,7 +169,10 @@ export default function VisualAnalysis() {
         />
         <label className="label"></label>
         <div className="flex justify-center">
-          <button className="btn btn-primary" disabled={loading}>
+          <button
+            className="btn btn-primary"
+            disabled={loading || input.length < 2}
+          >
             Generate response
           </button>
         </div>

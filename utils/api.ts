@@ -1,7 +1,7 @@
 export const submitRequest = async (
   url: string,
-  input: string,
-  user?: string | null
+  user?: string | null,
+  input?: string
 ) => {
   const response = await fetch(url, {
     method: 'POST',
