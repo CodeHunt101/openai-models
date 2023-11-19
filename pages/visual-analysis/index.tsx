@@ -3,7 +3,7 @@ import TextResult from '@/components/textResult'
 import Image from 'next/image'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
-import { useRouter } from 'next/router'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 export default function VisualAnalysis() {
   const [loading, setLoading] = useState(false)
@@ -11,8 +11,7 @@ export default function VisualAnalysis() {
   const [input, setInput] = useState('')
   const [selectedImageURL, setSelectedImageURL] = useState('')
   const [messages, setMessages] = useState<Message[] | string>([])
-  const router = useRouter()
-  const { user } = router.query
+  const { user } = useUser()
 
   const onImageChange = (e: FormEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement
@@ -46,7 +45,7 @@ export default function VisualAnalysis() {
     const formData = new FormData()
     formData.append('file', selectedFile)
     formData.append('prompt', input)
-    formData.append('user', user as string)
+    formData.append('user', user?.email || '')
     try {
       const response = await fetch('/api/visual-analysis', {
         method: 'POST',
@@ -80,10 +79,10 @@ export default function VisualAnalysis() {
     setLoading(false)
   }
 
-  const handleNewThread = async() => {
+  const handleNewThread = async () => {
     const formData = new FormData()
     formData.append('deleteMessages', true.toString())
-    formData.append('user', user as string)
+    formData.append('user', user?.email || '')
     try {
       setLoading(true)
       await fetch('/api/visual-analysis', {
@@ -91,8 +90,7 @@ export default function VisualAnalysis() {
         body: formData,
       })
       setMessages([])
-    }
-     catch (error) {
+    } catch (error) {
       console.error(error)
       setMessages('Some error occurred, please try again.')
     } finally {
@@ -103,7 +101,9 @@ export default function VisualAnalysis() {
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>VISUAL ANALYSIS</h2>
-      <button onClick={handleNewThread} className="btn btn-accent my-2">Start New Thread</button>
+      <button onClick={handleNewThread} className="btn btn-accent my-2">
+        Start New Thread
+      </button>
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {messages.length > 0 && (
         <>

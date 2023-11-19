@@ -38,7 +38,7 @@ export default function Layout({ children }: Props) {
           <>
             <ul className="menu bg-base-100 p-2 rounded-box flex md:flex-nowrap flex-row justify-center">
               <li>
-                <Link href={{ pathname: '/chat', query: { user: user.email } }}>
+                <Link href={'/chat'}>
                   <FontAwesomeIcon icon={faComments} />
                   Chats
                 </Link>
@@ -50,12 +50,7 @@ export default function Layout({ children }: Props) {
                 </Link>
               </li>
               <li>
-                <Link
-                  href={{
-                    pathname: '/visual-analysis',
-                    query: { user: user.email },
-                  }}
-                >
+                <Link href={'/visual-analysis'}>
                   <FontAwesomeIcon icon={solidFaImages} />
                   Image Analysis
                 </Link>

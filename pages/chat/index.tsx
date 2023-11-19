@@ -4,14 +4,13 @@ import TextResult from '@/components/textResult'
 import { deleteMessages, submitRequest } from '@/utils/api'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
-import { useRouter } from 'next/router'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 export default function Chat() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<Message[] | string>([])
-  const router = useRouter()
-  const { user } = router.query
+  const { user } = useUser()
 
   const handleChange = useCallback(
     (
@@ -29,11 +28,7 @@ export default function Chat() {
       event.preventDefault()
       setLoading(true)
       try {
-        const apiResult = await submitRequest(
-          '/api/chat',
-          input,
-          user as string
-        )
+        const apiResult = await submitRequest('/api/chat', input, user?.email)
         setMessages(
           mapChatArray(apiResult) || 'No result returned from the API'
         )
@@ -51,7 +46,7 @@ export default function Chat() {
   const handleNewThread = async () => {
     try {
       setLoading(true)
-      await deleteMessages('chat', user as string)
+      await deleteMessages('chat', user?.email)
       setMessages([])
     } catch (error) {
       console.error(error)
