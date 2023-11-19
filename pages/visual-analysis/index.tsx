@@ -44,7 +44,6 @@ export default function VisualAnalysis() {
       return
     }
     const formData = new FormData()
-    console.log({ selectedFile })
     formData.append('file', selectedFile)
     formData.append('prompt', input)
     formData.append('user', user as string)
@@ -81,9 +80,30 @@ export default function VisualAnalysis() {
     setLoading(false)
   }
 
+  const handleNewThread = async() => {
+    const formData = new FormData()
+    formData.append('deleteMessages', true.toString())
+    formData.append('user', user as string)
+    try {
+      setLoading(true)
+      await fetch('/api/visual-analysis', {
+        method: 'POST',
+        body: formData,
+      })
+      setMessages([])
+    }
+     catch (error) {
+      console.error(error)
+      setMessages('Some error occurred, please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>VISUAL ANALYSIS</h2>
+      <button onClick={handleNewThread} className="btn btn-accent my-2">Start New Thread</button>
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {messages.length > 0 && (
         <>

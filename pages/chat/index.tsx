@@ -1,7 +1,7 @@
 import { FormEvent, useState, useCallback } from 'react'
 import Form from '@/components/form'
 import TextResult from '@/components/textResult'
-import { submitRequest } from '@/utils/api'
+import { deleteMessages, submitRequest } from '@/utils/api'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
 import { useRouter } from 'next/router'
@@ -48,9 +48,25 @@ export default function Chat() {
     [input, user]
   )
 
+  const handleNewThread = async () => {
+    try {
+      setLoading(true)
+      await deleteMessages('chat', user as string)
+      setMessages([])
+    } catch (error) {
+      console.error(error)
+      setMessages('Some error occurred, please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="flex flex-col items-center mt-5">
       <h2>CHAT</h2>
+      <button onClick={handleNewThread} className="btn btn-accent my-2">
+        Start New Thread
+      </button>
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {messages.length > 0 && <TextResult messages={messages} />}
       <Form

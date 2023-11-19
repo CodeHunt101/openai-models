@@ -19,3 +19,19 @@ export const submitRequest = async (
   }
   return data.result
 }
+
+export const deleteMessages = async(endpoint: 'chat' | 'visual-analysis', user?: string) => {
+  if (!user) return
+  try {
+    await fetch(`/api/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({deleteMessages: true, user: user as string}),
+    })
+  } catch (error) {
+    console.error(error)
+    alert(error)
+  }
+}

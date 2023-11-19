@@ -14,10 +14,15 @@ const openai = new OpenAI()
 let messagesWithUser: MessageWithAuthUser[] = []
 
 export default async function chat(req: NextApiRequest, res: NextApiResponse) {
+  const user = req.body.user
+  if (req.body.deleteMessages) {
+    messagesWithUser = messagesWithUser.filter(message => message.user !== user)
+    res.status(200).json({ message: 'removed messages' })
+    return
+  }
+
   const prompt = validatePromptFromJson(req, res)
   if (!prompt) return
-
-  const user = req.body.user
 
   logMessageWithTimestamp('Chat', prompt)
   messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
@@ -38,7 +43,7 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
     console.log({ messagesWithUser })
     console.log({ filteredMessages })
 
-    res.status(200).json({ result: filteredMessages })
+    res.status(200).json({ result: filteredMessages.slice(-10) })
   } catch (error: any) {
     console.error(error)
     if (error.response) {

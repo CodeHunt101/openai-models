@@ -39,10 +39,19 @@ export default async function visualAnalysis(
       console.log(err)
       return
     }
-    const prompt = validatePromptFromForm(fields, res)
-    if (!prompt) return
 
     const user = (fields.user?.[0] as string) || ''
+
+    if (fields.deleteMessages?.[0]) {
+      messagesWithUser = messagesWithUser.filter(
+        (message) => message.user !== user
+      )
+      res.status(200).json({ message: 'removed messages' })
+      return
+    }
+
+    const prompt = validatePromptFromForm(fields, res)
+    if (!prompt) return
 
     logMessageWithTimestamp('Visual Analysis', prompt)
 
@@ -102,7 +111,7 @@ export default async function visualAnalysis(
       console.log({ messagesWithUser })
       console.log({ filteredMessages })
 
-      res.status(200).json({ result: filteredMessages })
+      res.status(200).json({ result: filteredMessages.slice(-10) })
     } catch (error: any) {
       if (error.response) {
         console.error(error.response.status, error.response.data)
