@@ -84,7 +84,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h2>CHAT</h2>
+      <div className="badge badge-primary text-lg p-5">Chat</div>
       {messages.length > 0 && (
         <button onClick={handleNewThread} className="btn btn-accent my-2">
           Start New Thread

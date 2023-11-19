@@ -38,7 +38,6 @@ export default function Audios() {
       return
     }
     const formData = new FormData()
-    console.log({ selectedFile })
     formData.append('file', selectedFile)
     try {
       const response = await fetch('/api/audios', {
@@ -72,7 +71,9 @@ export default function Audios() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h2>VOICE TRANSCRIPTION</h2>
+      <div className="badge badge-primary text-lg p-5 mb-5">
+        Voice Transcription
+      </div>
       <form
         method="post"
         onSubmit={onSubmit}

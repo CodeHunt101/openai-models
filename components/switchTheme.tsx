@@ -15,7 +15,7 @@ const SwitchTheme = () => {
   }
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'cupcake' ? 'dark' : 'cupcake'))
+    setTheme((prevTheme) => (prevTheme === 'cupcake' ? 'forest' : 'cupcake'))
     document.documentElement.setAttribute('data-theme', theme)
   }
 

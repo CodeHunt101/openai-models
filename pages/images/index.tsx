@@ -37,7 +37,7 @@ export default function Images() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h2>IMAGE GENERATION</h2>
+      <div className="badge badge-primary text-lg p-5">Create Image</div>
       <Form
         input={input}
         handleChange={handleChange}

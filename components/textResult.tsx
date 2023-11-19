@@ -18,17 +18,22 @@ const TextResult = ({ messages }: TextResultProps) => {
           >
             <div className="card-body">
               {
-                <div className="max-w-xl">
-                  <h3 className="card-title">User:</h3>
-                  <p className="my-1">{user}</p>
+                <div className="max-w-xl my-1">
+                  <kbd className="kbd kbd-md">You</kbd>
+                  <p className="my-1 ml-1 text-primary-content">{user}</p>
                 </div>
               }
               {
-                <div className="max-w-xl">
-                  <h3 className="card-title">Assistant:</h3>
-                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                    {assistant}
-                  </ReactMarkdown>
+                <div className="max-w-xl my-1">
+                  <kbd className="kbd kbd-md">Assistant</kbd>
+                  <div className="prose prose-neutral ml-1">
+                    <ReactMarkdown
+                      className="text-primary-content"
+                      remarkPlugins={[remarkGfm, remarkBreaks]}
+                    >
+                      {assistant}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               }
             </div>

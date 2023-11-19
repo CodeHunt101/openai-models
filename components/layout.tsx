@@ -62,7 +62,7 @@ export default function Layout({ children }: Props) {
                 </Link>
               </li>
             </ul>
-            <div className="prose m-auto">{children}</div>
+            <div className="m-auto">{children}</div>
           </>
         )}
       </main>

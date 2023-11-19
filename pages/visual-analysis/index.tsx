@@ -123,7 +123,7 @@ export default function VisualAnalysis() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <h2>VISUAL ANALYSIS</h2>
+      <div className="badge badge-primary text-lg p-5">Analyse Image</div>
       <p>Images will not be saved</p>
       {messages.length > 0 && (
         <button onClick={handleNewThread} className="btn btn-accent my-2">

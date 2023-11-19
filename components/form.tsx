@@ -35,7 +35,7 @@ const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-control w-full max-w-lg">
-      {defineIcon(path)}
+      <div className="m-auto my-2">{defineIcon(path)}</div>
       <label className="label">
         <span className="label-text">Enter your prompt</span>
       </label>
