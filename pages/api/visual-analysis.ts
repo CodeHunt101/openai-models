@@ -7,9 +7,13 @@ import {
   encodeImage,
   validatePromptFromForm,
   isUploadedFileValid,
+  logMessageWithTimestamp,
+  addUserMessage,
+  filterMessagesByUser,
+  addAssistantMessage,
 } from '../../utils/helpers'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ChatCompletionMessageParam } from 'openai/resources'
+import { MessageWithAuthUser } from '@/types/types'
 
 // Constants
 const POLL_INTERVAL = 1000 // 1 second
@@ -23,7 +27,7 @@ export const config = {
 
 const openai = new OpenAI()
 
-const messages: ChatCompletionMessageParam[] = []
+let messagesWithUser: MessageWithAuthUser[] = []
 
 export default async function visualAnalysis(
   req: NextApiRequest,
@@ -38,13 +42,13 @@ export default async function visualAnalysis(
     const prompt = validatePromptFromForm(fields, res)
     if (!prompt) return
 
-    console.log({
-      service: 'Visual Analysis',
-      date: new Date().toLocaleString('en-AU'),
-      prompt,
-    })
+    const user = (fields.user?.[0] as string) || ''
 
-    messages.push({ role: 'user', content: prompt })
+    logMessageWithTimestamp('Visual Analysis', prompt)
+
+    messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
+
+    const filteredMessages = filterMessagesByUser(user, messagesWithUser)
 
     const uploadedFile = files.file
     if (!uploadedFile) return
@@ -93,10 +97,12 @@ export default async function visualAnalysis(
         max_tokens: 600,
       })
       const response = chatCompletion.choices[0].message?.content
-      messages.push({ role: 'assistant', content: response ?? '' })
-      console.log(messages)
+      messagesWithUser = addAssistantMessage(user, response, messagesWithUser)
+      filteredMessages.push({ role: 'assistant', content: response ?? '' })
+      console.log({ messagesWithUser })
+      console.log({ filteredMessages })
 
-      res.status(200).json({ result: messages })
+      res.status(200).json({ result: filteredMessages })
     } catch (error: any) {
       if (error.response) {
         console.error(error.response.status, error.response.data)

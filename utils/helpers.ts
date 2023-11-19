@@ -1,3 +1,4 @@
+import { MessageWithAuthUser } from '@/types/types'
 import formidable from 'formidable'
 import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -95,3 +96,66 @@ export const encodeImage = (imagePath: string) => {
     return null
   }
 }
+
+export const logMessageWithTimestamp = (service: string, prompt: string) => {
+  console.log({
+    service,
+    date: new Date().toLocaleString('en-AU'),
+    prompt,
+  })
+}
+
+export const addUserMessage = (
+  prompt: string,
+  user: string,
+  messagesWithUser: MessageWithAuthUser[]
+) => {
+  return [...messagesWithUser, { role: 'user', content: prompt, user }]
+}
+
+export const addAssistantMessage = (
+  user: string,
+  response: string | null,
+  messagesWithUser: MessageWithAuthUser[]
+) => {
+  return [
+    ...messagesWithUser,
+    { role: 'assistant', content: response || '', user },
+  ]
+}
+
+export const filterMessagesByUser = (
+  user: string,
+  messagesWithUser: MessageWithAuthUser[]
+) => {
+  return messagesWithUser
+    .filter((message) => message.user === user)
+    .map(({ role, content }) => ({ role, content }))
+}
+
+//USE IN THE FUTURE
+
+// const addUserMessageWithImage = (
+//   prompt: string,
+//   user: string,
+//   messagesWithImageAndUser: MessageWithImageAndAuthUser[],
+//   base64Image: string | null
+// ): MessageWithImageAndAuthUser[] => {
+//   return [
+//     ...messagesWithImageAndUser,
+//     {
+//       role: 'user',
+//       content: [
+//         {
+//           type: 'text',
+//           text: prompt,
+//         },
+//         {
+//           type: 'image_url',
+//           image_url: { url: `data:image/jpeg;base64,${base64Image}` },
+//         },
+//       ],
+//       user,
+//     },
+//   ]
+// }

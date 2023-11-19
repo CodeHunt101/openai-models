@@ -4,11 +4,14 @@ import TextResult from '@/components/textResult'
 import { submitRequest } from '@/utils/api'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
+import { useRouter } from 'next/router'
 
 export default function Chat() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<Message[] | string>([])
+  const router = useRouter()
+  const { user } = router.query
 
   const handleChange = useCallback(
     (
@@ -26,7 +29,11 @@ export default function Chat() {
       event.preventDefault()
       setLoading(true)
       try {
-        const apiResult = await submitRequest('/api/chat', input)
+        const apiResult = await submitRequest(
+          '/api/chat',
+          input,
+          user as string
+        )
         setMessages(
           mapChatArray(apiResult) || 'No result returned from the API'
         )
@@ -38,7 +45,7 @@ export default function Chat() {
         setInput('')
       }
     },
-    [input]
+    [input, user]
   )
 
   return (

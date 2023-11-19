@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react'
 import TextResult from '@/components/textResult'
 import Image from 'next/image'
-import { ChatCompletionMessageParam } from 'openai/resources'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
+import { useRouter } from 'next/router'
 
 export default function VisualAnalysis() {
   const [loading, setLoading] = useState(false)
@@ -11,6 +11,8 @@ export default function VisualAnalysis() {
   const [input, setInput] = useState('')
   const [selectedImageURL, setSelectedImageURL] = useState('')
   const [messages, setMessages] = useState<Message[] | string>([])
+  const router = useRouter()
+  const { user } = router.query
 
   const onImageChange = (e: FormEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement
@@ -45,6 +47,7 @@ export default function VisualAnalysis() {
     console.log({ selectedFile })
     formData.append('file', selectedFile)
     formData.append('prompt', input)
+    formData.append('user', user as string)
     try {
       const response = await fetch('/api/visual-analysis', {
         method: 'POST',
