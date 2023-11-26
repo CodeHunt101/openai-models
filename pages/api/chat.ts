@@ -38,6 +38,15 @@ export default async function chat(req: NextApiRequest, res: NextApiResponse) {
   const filteredMessages = filterMessagesByUser(user, messagesWithUser)
 
   try {
+
+    const list = await openai.files.list();
+
+    for await (const file of list) {
+      console.log({file});
+    }
+
+
+
     const chatCompletion = await openai.chat.completions.create({
       model: 'gpt-4-1106-preview',
       messages: filteredMessages as ChatCompletionMessageParam[],

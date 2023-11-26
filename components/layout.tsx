@@ -36,7 +36,7 @@ export default function Layout({ children }: Props) {
 
         {user && (
           <>
-            <ul className="menu bg-base-100 p-2 rounded-box flex md:flex-nowrap flex-row justify-center">
+            <ul className="menu bg-base-100 p-2 rounded-box flex flex-row justify-center">
               <li>
                 <Link href={'/chat'}>
                   <FontAwesomeIcon icon={faComments} />
@@ -59,6 +59,18 @@ export default function Layout({ children }: Props) {
                 <Link href={'/audios'}>
                   <FontAwesomeIcon icon={faFileAudio} />
                   Voice Transcription
+                </Link>
+              </li>
+              {/* <li>
+                <Link href={'/ace-assistant'}>
+                  <FontAwesomeIcon icon={faFileAudio} />
+                  ACE Assistant
+                </Link>
+              </li> */}
+              <li>
+                <Link href={'/ace-assistant-image'}>
+                  <FontAwesomeIcon icon={faFileAudio} />
+                  ACE Assistant Image
                 </Link>
               </li>
             </ul>

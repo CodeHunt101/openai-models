@@ -34,20 +34,20 @@ const TextResult = ({ messages }: TextResultProps) => {
         {messages.map(({ user, assistant }, index) => (
           <div
             key={index}
-            className="card my-2 w-full shadow-lg self-start bg-primary"
+            className="card my-2 m-auto lg:w-2/3 shadow-lg self-start bg-primary"
           >
             <div className="card-body">
-              <div className="max-w-xl my-1">
+              <div className="my-1">
                 <kbd className="kbd kbd-md">You</kbd>
                 <p id="user-prompt" className="my-1 ml-1 text-primary-content">
                   {user}
                 </p>
               </div>
-              <div className="max-w-xl my-1">
+              <div className="my-1">
                 <kbd className="kbd kbd-md">Assistant</kbd>
                 <div
                   id="asistant-response"
-                  className="prose prose-neutral ml-1"
+                  className="prose prose-neutral ml-1 min-w-fit"
                   ref={assistantRef}
                 >
                   <ReactMarkdown
@@ -78,7 +78,42 @@ const TextResult = ({ messages }: TextResultProps) => {
     );
   }
 
-  return <p>{messages}</p>;
+  return <div
+  className="card my-2 m-auto lg:w-2/3 shadow-lg self-start bg-primary"
+>
+  <div className="card-body">
+    <div className="my-1">
+      <kbd className="kbd kbd-md">Assistant</kbd>
+      <div
+        id="asistant-response"
+        className="prose prose-neutral ml-1 min-w-fit"
+        ref={assistantRef}
+      >
+        <ReactMarkdown
+          className="text-primary-content"
+          remarkPlugins={[remarkGfm, remarkBreaks]}
+        >
+          {messages}
+        </ReactMarkdown>
+      </div>
+      <div className="flex flex-row-reverse">
+        <div className="tooltip" data-tip={tooltipMessage}>
+          <button
+            onClick={copyToClipboard}
+            className="btn btn-square btn-outline border-primary bg-neutral-content hover:bg-neutral-content hover:border-neutral-content"
+          >
+            <FontAwesomeIcon
+              className="text-primary-content"
+              icon={faClipboard}
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  // return <p>{messages}</p>;
 };
 
 export default TextResult;
