@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import OpenAI from 'openai';
-import { MessageContentText } from 'openai/resources/beta/threads/messages/messages';
-import { Run } from 'openai/resources/beta/threads/runs/runs';
-import { Thread } from 'openai/resources/beta/threads/threads';
+import { NextApiRequest, NextApiResponse } from 'next'
+import OpenAI from 'openai'
+import { MessageContentText } from 'openai/resources/beta/threads/messages/messages'
+import { Run } from 'openai/resources/beta/threads/runs/runs'
+import { Thread } from 'openai/resources/beta/threads/threads'
 
-const openai = new OpenAI();
+const openai = new OpenAI()
 
-let thread: Thread | null;
+let thread: Thread | null
 
 export default async function aceAssistant(
   req: NextApiRequest,
@@ -25,7 +25,7 @@ export default async function aceAssistant(
   try {
     if (req.body.deleteThread) {
       if (!thread) return
-      const response = await openai.beta.threads.del(thread.id);
+      const response = await openai.beta.threads.del(thread.id)
       console.log(response)
       thread = null
       res.status(200).json({ message: 'thread deleted' })
@@ -36,62 +36,66 @@ export default async function aceAssistant(
       if (!thread) {
         res.status(200).json({ message: 'no messages found' })
         return
-      } 
+      }
       const threadMessages = await openai.beta.threads.messages.list(
         thread.id,
         {
-          limit: 1
+          limit: 1,
         }
-      );
-    
-      console.log(threadMessages.data);
-      const lastMessage = (threadMessages.data[0].content[0] as MessageContentText).text.value
+      )
+
+      console.log(threadMessages.data)
+      const lastMessage = (
+        threadMessages.data[0].content[0] as MessageContentText
+      ).text.value
       res.status(200).json({ lastMessage })
       return
     }
 
     const myAssistant = await openai.beta.assistants.retrieve(
       'asst_c8OW9PpTXGoQJQDPrYuWIJ3A'
-    );
-  
-    console.log({myAssistant});
-  
+    )
+
+    console.log({ myAssistant })
+
     if (!thread) {
-      thread = await openai.beta.threads.create();
+      thread = await openai.beta.threads.create()
     }
 
-    console.log({thread})
-  
+    console.log({ thread })
+
     const message = await openai.beta.threads.messages.create(thread.id, {
       role: 'user',
       content: req.body.prompt,
-    });
-  
-    console.log({message})
-  
+    })
+
+    console.log({ message })
+
     let run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: myAssistant.id,
-    });
-    
+    })
+
     while (
       run.status !== 'completed' &&
       !['requires_action', 'cancelling', 'cancelled', 'expired'].includes(
         run.status
       )
     ) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      run = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-      console.log({run})
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      run = await openai.beta.threads.runs.retrieve(thread.id, run.id)
+      console.log({ run })
     }
-  
-    const messages = await openai.beta.threads.messages.list(
-      thread.id
-    );
 
-    const messageContentTextData = messages.data.map(messageData => messageData.content.map(content => (content as MessageContentText).text.value))[0][0]
-  
-    console.log({messageContentTextData})
-    
+    const messages = await openai.beta.threads.messages.list(thread.id)
+
+    const messageContentTextData = messages.data.map((messageData) =>
+      messageData.content.map(
+        (content) => (content as MessageContentText).text.value
+      )
+    )[0][0]
+
+    console.log({ messageContentTextData })
+
     res.status(200).json({ result: messageContentTextData })
   } catch (error: any) {
     console.error(error)
@@ -108,4 +112,3 @@ export default async function aceAssistant(
     }
   }
 }
-

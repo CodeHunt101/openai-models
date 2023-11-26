@@ -54,7 +54,11 @@ export default function AceAssistant() {
       event.preventDefault()
       setLoading(true)
       try {
-        const apiResult = await submitRequest('/api/ace-assistant', user?.email, input)
+        const apiResult = await submitRequest(
+          '/api/ace-assistant',
+          user?.email,
+          input
+        )
         setMessages(
           // mapChatArray(apiResult) || 'No result returned from the API'
           apiResult
