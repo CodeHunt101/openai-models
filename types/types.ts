@@ -4,6 +4,10 @@ export type MessageWithAuthUser = {
   content: string;
   user: string;
 }
+export type MessageWithoutUser = {
+  role: string;
+  content: string;
+}
 
 //USE IN THE FUTURE
 // type PromptItem = {

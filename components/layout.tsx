@@ -3,11 +3,9 @@ import SwitchTheme from './switchTheme'
 import Link from 'next/link'
 import {
   faComments,
-  faPenClip,
   faFileAudio,
 } from '@fortawesome/free-solid-svg-icons'
 import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons'
-import { faImages as solidFaImages } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Logout from '@/pages/logout'
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -47,12 +45,6 @@ export default function Layout({ children }: Props) {
                 <Link href={'/images'}>
                   <FontAwesomeIcon icon={regularFaImages} />
                   Image Generation
-                </Link>
-              </li>
-              <li>
-                <Link href={'/visual-analysis'}>
-                  <FontAwesomeIcon icon={solidFaImages} />
-                  Image Analysis
                 </Link>
               </li>
               <li>

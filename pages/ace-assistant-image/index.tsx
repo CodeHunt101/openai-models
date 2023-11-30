@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import TextResult from '@/components/textResult'
 import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
-import { submitRequest } from '@/utils/api'
+import { submitRequest } from '@/utils/client'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)
@@ -66,7 +66,7 @@ export default function AceAssistantImage() {
     )
     formData.append('user', user?.email || '')
     try {
-      const response = await fetch('/api/visual-analysis', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         body: formData,
       })

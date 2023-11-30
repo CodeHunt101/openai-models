@@ -1,7 +1,7 @@
 import { FormEvent, useState, useCallback, useEffect, useMemo } from 'react'
 import Form from '@/components/form'
 import TextResult from '@/components/textResult'
-import { deleteMessages, submitRequest } from '@/utils/api'
+import { deleteMessages, submitRequest } from '@/utils/client'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'

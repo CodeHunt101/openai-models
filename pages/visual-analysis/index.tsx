@@ -20,7 +20,7 @@ export default function VisualAnalysis() {
     const getMessages = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/visual-analysis', {
+        const response = await fetch('/api/chat', {
           method: 'POST',
           body: formData,
         })
@@ -60,17 +60,14 @@ export default function VisualAnalysis() {
   async function onSubmit(event: any) {
     event.preventDefault()
     setLoading(true)
-    if (!selectedFile) {
-      alert('Please add the file')
-      setLoading(false)
-      return
-    }
     const formData = new FormData()
-    formData.append('file', selectedFile)
+    if (selectedFile) {
+      formData.append('file', selectedFile)
+    }
     formData.append('prompt', input)
     formData.append('user', user?.email || '')
     try {
-      const response = await fetch('/api/visual-analysis', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         body: formData,
       })
@@ -82,7 +79,10 @@ export default function VisualAnalysis() {
           new Error(`Request failed with status ${response.status}`)
         )
       }
-      setSelectedImageURL(URL.createObjectURL(selectedFile))
+      if (selectedFile) {
+        setSelectedImageURL(URL.createObjectURL(selectedFile))
+      }
+      
       setMessages(
         mapChatArray(data.result) || 'No result returned from the API'
       )
@@ -100,6 +100,7 @@ export default function VisualAnalysis() {
       alert(error.message)
     }
     setLoading(false)
+    setSelectedFile(null)
   }
 
   const handleNewThread = async () => {
@@ -108,7 +109,7 @@ export default function VisualAnalysis() {
     formData.append('user', user?.email || '')
     try {
       setLoading(true)
-      await fetch('/api/visual-analysis', {
+      await fetch('/api/chat', {
         method: 'POST',
         body: formData,
       })
@@ -123,7 +124,7 @@ export default function VisualAnalysis() {
 
   return (
     <div className="flex flex-col items-center mt-5">
-      <div className="badge badge-primary text-lg p-5">Analyse Image</div>
+      <div className="badge badge-primary text-lg p-5">Chat</div>
       <p>Images will not be saved</p>
       {messages.length > 0 && (
         <button onClick={handleNewThread} className="btn btn-accent my-2">

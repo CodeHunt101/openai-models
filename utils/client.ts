@@ -21,7 +21,7 @@ export const submitRequest = async (
 }
 
 export const deleteMessages = async (
-  endpoint: 'chat' | 'visual-analysis',
+  endpoint: 'chat',
   user?: string | null
 ) => {
   if (!user) return

@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import Form from '@/components/form'
-import { submitRequest } from '@/utils/api'
+import { submitRequest } from '@/utils/client'
 
 export default function Images() {
   const [input, setInput] = useState('')

@@ -1,78 +1,68 @@
-import { MessageWithAuthUser } from '@/types/types'
+import formidable from 'formidable'
 import {
-  addAssistantMessage,
+  validatePromptFromForm,
+  logMessageWithTimestamp,
   addUserMessage,
   filterMessagesByUser,
-  logMessageWithTimestamp,
-  validatePromptFromJson,
-} from '@/utils/helpers'
+} from '../../utils/helpers'
 import { NextApiRequest, NextApiResponse } from 'next'
-import OpenAI from 'openai'
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
-const openai = new OpenAI()
+import { MessageWithAuthUser } from '@/types/types';
+import { handlePromptOnly, handlePromptWithImage } from '@/utils/api/chat';
 
-let messagesWithUser: MessageWithAuthUser[] = []
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
 
-export default async function chat(req: NextApiRequest, res: NextApiResponse) {
-  const user = req.body.user
-  if (req.body.getMessages) {
+export let messagesWithUser: MessageWithAuthUser[] = [];
+
+export const updateMessagesWithUser = (newMessages: MessageWithAuthUser[]) => {
+  messagesWithUser = newMessages;
+};
+
+export default async function visualAnalysis(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const form = formidable({})
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.log(err)
+      return
+    }
+
+    const user = (fields.user?.[0] as string) || ''
+
+    if (fields.getMessages?.[0]) {
+      const filteredMessages = filterMessagesByUser(user, messagesWithUser)
+      res.status(200).json({ result: filteredMessages.slice(-10) })
+      return
+    }
+
+    if (fields.deleteMessages?.[0]) {
+      messagesWithUser = messagesWithUser.filter(
+        (message) => message.user !== user
+      )
+      res.status(200).json({ message: 'removed messages' })
+      return
+    }
+
+    const prompt = validatePromptFromForm(fields, res)
+    if (!prompt) return
+
+    logMessageWithTimestamp('Chat', prompt)
+
+    messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
+
     const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-    res.status(200).json({ result: filteredMessages.slice(-10) })
-    return
-  }
 
-  if (req.body.deleteMessages) {
-    messagesWithUser = messagesWithUser.filter(
-      (message) => message.user !== user
-    )
-    res.status(200).json({ message: 'removed messages' })
-    return
-  }
+    const uploadedFile = files.file
 
-  const prompt = validatePromptFromJson(req, res)
-  if (!prompt) return
-
-  logMessageWithTimestamp('Chat', prompt)
-  messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
-
-  const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-
-  try {
-
-    const list = await openai.files.list();
-
-    for await (const file of list) {
-      console.log({file});
-    }
-
-
-
-    const chatCompletion = await openai.chat.completions.create({
-      model: 'gpt-4-1106-preview',
-      messages: filteredMessages as ChatCompletionMessageParam[],
-      temperature: 0.8,
-    })
-
-    const response = chatCompletion.choices[0].message?.content
-    messagesWithUser = addAssistantMessage(user, response, messagesWithUser)
-    filteredMessages.push({ role: 'assistant', content: response ?? '' })
-
-    console.log({ messagesWithUser })
-    console.log({ filteredMessages })
-
-    res.status(200).json({ result: filteredMessages.slice(-10) })
-  } catch (error: any) {
-    console.error(error)
-    if (error.response) {
-      console.error(error.response.status, error.response.data)
-      res.status(error.response.status).json(error.response.data)
+    if (uploadedFile) {
+      handlePromptWithImage(filteredMessages, user, uploadedFile, prompt, res)
     } else {
-      console.error(`Error with OpenAI API request: ${error.message}`)
-      res.status(500).json({
-        error: {
-          message: 'An error occurred during your request.',
-        },
-      })
+      handlePromptOnly(filteredMessages, user, res)
     }
-  }
+  })
 }

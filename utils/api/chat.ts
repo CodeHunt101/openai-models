@@ -5,70 +5,43 @@ import formidable from 'formidable'
 import {
   pollForFile,
   encodeImage,
-  validatePromptFromForm,
   isUploadedFileValid,
-  logMessageWithTimestamp,
-  addUserMessage,
-  filterMessagesByUser,
   addAssistantMessage,
-} from '../../utils/helpers'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { MessageWithAuthUser } from '@/types/types'
+} from '../helpers'
+import { NextApiResponse } from 'next'
+import { MessageWithoutUser } from '@/types/types'
+import { ChatCompletionMessageParam } from 'openai/resources'
+import { messagesWithUser, updateMessagesWithUser } from '@/pages/api/chat'
 
 // Constants
 const POLL_INTERVAL = 1000 // 1 second
 const POLL_TIMEOUT = 60000
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
 const openai = new OpenAI()
 
-let messagesWithUser: MessageWithAuthUser[] = []
+export const handlePromptOnly = async (filteredMessages: MessageWithoutUser[], user: string, res: NextApiResponse) => {
+  try {
+    const chatCompletion = await openai.chat.completions.create({
+      model: 'gpt-4-1106-preview',
+      messages: filteredMessages as ChatCompletionMessageParam[],
+      temperature: 0.8,
+    })
+    const response = chatCompletion.choices[0].message?.content
+    const messagesWithUserWithAssistant = addAssistantMessage(user, response, messagesWithUser)
+    updateMessagesWithUser(messagesWithUserWithAssistant)
+    filteredMessages.push({ role: 'assistant', content: response ?? '' })
+  
+    console.log({ messagesWithUser })
+    console.log({ filteredMessages })
+  
+    return res.status(200).json({ result: filteredMessages.slice(-10) })
+  } catch (error: any) {
+    handleError(error, res)
+  }
+}
 
-export default async function visualAnalysis(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const form = formidable({})
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.log(err)
-      return
-    }
-
-    const user = (fields.user?.[0] as string) || ''
-
-    if (fields.getMessages?.[0]) {
-      const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-      res.status(200).json({ result: filteredMessages.slice(-10) })
-      return
-    }
-
-    if (fields.deleteMessages?.[0]) {
-      messagesWithUser = messagesWithUser.filter(
-        (message) => message.user !== user
-      )
-      res.status(200).json({ message: 'removed messages' })
-      return
-    }
-
-    const prompt = validatePromptFromForm(fields, res)
-    if (!prompt) return
-
-    logMessageWithTimestamp('Visual Analysis', prompt)
-
-    messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
-
-    const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-
-    const uploadedFile = files.file
-    if (!uploadedFile) return
-
-    const uploadedFileValidity = isUploadedFileValid(uploadedFile, res)
+export const handlePromptWithImage = async (filteredMessages: MessageWithoutUser[], user: string, uploadedFile: formidable.File[], prompt: string, res: NextApiResponse) => {
+  const uploadedFileValidity = isUploadedFileValid(uploadedFile, res)
     if (!uploadedFileValidity) return
 
     const originalImagePath = uploadedFile[0].filepath
@@ -112,24 +85,16 @@ export default async function visualAnalysis(
         max_tokens: 600,
       })
       const response = chatCompletion.choices[0].message?.content
-      messagesWithUser = addAssistantMessage(user, response, messagesWithUser)
+      const messagesWithUserWithAssistant = addAssistantMessage(user, response, messagesWithUser)
+      updateMessagesWithUser(messagesWithUserWithAssistant)
       filteredMessages.push({ role: 'assistant', content: response ?? '' })
+      
       console.log({ messagesWithUser })
       console.log({ filteredMessages })
 
       res.status(200).json({ result: filteredMessages.slice(-10) })
     } catch (error: any) {
-      if (error.response) {
-        console.error(error.response.status, error.response.data)
-        res.status(error.response.status).json(error.response.data)
-      } else {
-        console.error(error.message)
-        res.status(500).json({
-          error: {
-            message: error.message,
-          },
-        })
-      }
+      handleError(error, res)
     } finally {
       // Remove the temporary image file
       try {
@@ -138,5 +103,18 @@ export default async function visualAnalysis(
         console.error(`Error deleting image: ${unlinkError.message}`)
       }
     }
-  })
+}
+
+export const handleError = (error: any, res: NextApiResponse) => {
+  if (error.response) {
+    console.error(error.response.status, error.response.data)
+    res.status(error.response.status).json(error.response.data)
+  } else {
+    console.error(error.message)
+    res.status(500).json({
+      error: {
+        message: error.message,
+      },
+    })
+  }
 }
