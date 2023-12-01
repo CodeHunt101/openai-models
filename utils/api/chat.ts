@@ -31,16 +31,7 @@ export const handlePromptOnly = async (
       temperature: 0.8,
     })
     const response = chatCompletion.choices[0].message?.content
-    const messagesWithUserWithAssistant = addAssistantMessage(
-      user,
-      response,
-      messagesWithUser
-    )
-    updateMessagesWithUser(messagesWithUserWithAssistant)
-    filteredMessages.push({ role: 'assistant', content: response ?? '' })
-
-    console.log({ messagesWithUser })
-    console.log({ filteredMessages })
+    updateMessages(user, response, filteredMessages)
 
     return res.status(200).json({ result: filteredMessages.slice(-10) })
   } catch (error: any) {
@@ -99,16 +90,7 @@ export const handlePromptWithImage = async (
       max_tokens: 600,
     })
     const response = chatCompletion.choices[0].message?.content
-    const messagesWithUserWithAssistant = addAssistantMessage(
-      user,
-      response,
-      messagesWithUser
-    )
-    updateMessagesWithUser(messagesWithUserWithAssistant)
-    filteredMessages.push({ role: 'assistant', content: response ?? '' })
-
-    console.log({ messagesWithUser })
-    console.log({ filteredMessages })
+    updateMessages(user, response, filteredMessages)
 
     res.status(200).json({ result: filteredMessages.slice(-10) })
   } catch (error: any) {
@@ -121,6 +103,23 @@ export const handlePromptWithImage = async (
       console.error(`Error deleting image: ${unlinkError.message}`)
     }
   }
+}
+
+const updateMessages = (
+  user: string,
+  response: string | null,
+  filteredMessages: MessageWithoutUser[]
+) => {
+  const messagesWithUserWithAssistant = addAssistantMessage(
+    user,
+    response,
+    messagesWithUser
+  )
+  updateMessagesWithUser(messagesWithUserWithAssistant)
+  filteredMessages.push({ role: 'assistant', content: response ?? '' })
+
+  console.log({ messagesWithUser })
+  console.log({ filteredMessages })
 }
 
 export const handleError = (error: any, res: NextApiResponse) => {
