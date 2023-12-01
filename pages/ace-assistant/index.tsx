@@ -63,7 +63,6 @@ export default function AceAssistant() {
           // mapChatArray(apiResult) || 'No result returned from the API'
           apiResult
         )
-        console.log(apiResult)
       } catch (error) {
         console.error(error)
         setMessages('Some error occurred, please try again.')
