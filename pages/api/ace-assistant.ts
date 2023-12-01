@@ -77,13 +77,18 @@ export default async function aceAssistant(
 
     while (
       run.status !== 'completed' &&
-      !['requires_action', 'cancelling', 'cancelled', 'expired'].includes(
+      !['requires_action', 'cancelling', 'cancelled', 'expired', 'failed'].includes(
         run.status
       )
     ) {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       run = await openai.beta.threads.runs.retrieve(thread.id, run.id)
       console.log({ run })
+    }
+
+    if (run.status === 'failed') {
+      res.status(200).json({ message: 'run failed, try again' })
+      return
     }
 
     const messages = await openai.beta.threads.messages.list(thread.id)
