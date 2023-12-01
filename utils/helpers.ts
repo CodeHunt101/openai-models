@@ -2,6 +2,7 @@ import { MessageWithAuthUser } from '@/types/types'
 import formidable from 'formidable'
 import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { ChatCompletionMessageParam } from 'openai/resources'
 
 export function validatePromptFromJson(
   req: NextApiRequest,
@@ -93,7 +94,7 @@ export const encodeImage = (imagePath: string) => {
     return base64Image
   } catch (error: any) {
     console.error(`Error encoding image: ${error.message}`)
-    return null
+    return
   }
 }
 
@@ -130,7 +131,10 @@ export const filterMessagesByUser = (
 ) => {
   return messagesWithUser
     .filter((message) => message.user === user)
-    .map(({ role, content }) => ({ role, content }))
+    .map(({ role, content }) => ({
+      role,
+      content,
+    })) as ChatCompletionMessageParam[]
 }
 
 //USE IN THE FUTURE

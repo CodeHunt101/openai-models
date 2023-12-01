@@ -9,27 +9,30 @@ import {
   addAssistantMessage,
 } from '../helpers'
 import { NextApiResponse } from 'next'
-import { MessageWithoutUser } from '@/types/types'
+import { ChatCompletionModel } from '@/types/types'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { messagesWithUser, updateMessagesWithUser } from '@/pages/api/chat'
+import {
+  getChatCompletion,
+  getChatCompletionWithVisuals,
+} from '../openai-requests'
 
 // Constants
 const POLL_INTERVAL = 1000 // 1 second
 const POLL_TIMEOUT = 60000
-
 const openai = new OpenAI()
 
 export const handlePromptOnly = async (
-  filteredMessages: MessageWithoutUser[],
+  filteredMessages: ChatCompletionMessageParam[],
   user: string,
   res: NextApiResponse
 ) => {
   try {
-    const chatCompletion = await openai.chat.completions.create({
-      model: 'gpt-4-1106-preview',
-      messages: filteredMessages as ChatCompletionMessageParam[],
-      temperature: 0.8,
-    })
+    const chatCompletion = await getChatCompletion(
+      filteredMessages,
+      ChatCompletionModel.GPT_4_1106_PREVIEW,
+      openai
+    )
     const response = chatCompletion.choices[0].message?.content
     updateMessages(user, response, filteredMessages)
 
@@ -40,7 +43,7 @@ export const handlePromptOnly = async (
 }
 
 export const handlePromptWithImage = async (
-  filteredMessages: MessageWithoutUser[],
+  filteredMessages: ChatCompletionMessageParam[],
   user: string,
   uploadedFile: formidable.File[],
   prompt: string,
@@ -72,23 +75,16 @@ export const handlePromptWithImage = async (
     await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT)
 
     const base64Image = encodeImage(imagePath)
+    if (!base64Image) {
+      throw Error('problem with encoding image')
+    }
 
-    const chatCompletion = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            {
-              type: 'image_url',
-              image_url: { url: `data:image/jpeg;base64,${base64Image}` },
-            },
-          ],
-        },
-      ],
-      max_tokens: 600,
-    })
+    const chatCompletion = await getChatCompletionWithVisuals(
+      prompt,
+      ChatCompletionModel.GPT_4_VISION_PREVIEW,
+      base64Image,
+      openai
+    )
     const response = chatCompletion.choices[0].message?.content
     updateMessages(user, response, filteredMessages)
 
@@ -108,7 +104,7 @@ export const handlePromptWithImage = async (
 const updateMessages = (
   user: string,
   response: string | null,
-  filteredMessages: MessageWithoutUser[]
+  filteredMessages: ChatCompletionMessageParam[]
 ) => {
   const messagesWithUserWithAssistant = addAssistantMessage(
     user,

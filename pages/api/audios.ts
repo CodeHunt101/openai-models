@@ -4,6 +4,8 @@ import path from 'path'
 import formidable from 'formidable'
 import { isUploadedFileValid, pollForFile } from '../../utils/helpers'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { AudioTranscriptionModel } from '@/types/types'
+import { getAudioTranscription } from '@/utils/openai-requests'
 
 // Constants
 const POLL_INTERVAL = 1000 // 1 second
@@ -65,10 +67,11 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
 
       const audioFile = fs.createReadStream(audioPath)
 
-      const audioTranscription = await openai.audio.transcriptions.create({
-        file: audioFile,
-        model: 'whisper-1',
-      })
+      const audioTranscription = await getAudioTranscription(
+        audioFile,
+        AudioTranscriptionModel.WHISPER_1,
+        openai
+      )
 
       const result = audioTranscription.text
       console.log({ result })

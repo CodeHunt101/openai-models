@@ -44,8 +44,7 @@ export default async function visualAnalysis(
       messagesWithUser = messagesWithUser.filter(
         (message) => message.user !== user
       )
-      res.status(200).json({ message: 'removed messages' })
-      return
+      return res.status(200).json({ message: 'removed messages' })
     }
 
     const prompt = validatePromptFromForm(fields, res)
@@ -54,9 +53,7 @@ export default async function visualAnalysis(
     logMessageWithTimestamp('Chat', prompt)
 
     messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
-
     const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-
     const uploadedFile = files.file
 
     if (uploadedFile) {

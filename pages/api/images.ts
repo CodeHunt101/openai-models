@@ -1,4 +1,6 @@
+import { ImageGenerationModel } from '@/types/types'
 import { validatePromptFromJson } from '@/utils/helpers'
+import { getImageGeneration } from '@/utils/openai-requests'
 import { NextApiRequest, NextApiResponse } from 'next'
 import OpenAI from 'openai'
 
@@ -18,13 +20,11 @@ export default async function images(
   })
 
   try {
-    const image = await openai.images.generate({
-      model: 'dall-e-3',
+    const image = await getImageGeneration(
       prompt,
-      n: 1,
-      size: '1024x1024',
-      quality: 'hd',
-    })
+      ImageGenerationModel.DALL_E_3,
+      openai
+    )
     console.log({ result: image.data[0].url })
     console.log(image.data)
     res.status(200).json({ result: image.data })
