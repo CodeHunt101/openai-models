@@ -1,10 +1,7 @@
 import type { ReactNode } from 'react'
 import SwitchTheme from './switchTheme'
 import Link from 'next/link'
-import {
-  faComments,
-  faFileAudio,
-} from '@fortawesome/free-solid-svg-icons'
+import { faComments, faFileAudio } from '@fortawesome/free-solid-svg-icons'
 import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Logout from '@/pages/logout'

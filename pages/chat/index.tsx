@@ -82,7 +82,7 @@ export default function Chat() {
       if (selectedFile) {
         setSelectedImageURL(URL.createObjectURL(selectedFile))
       }
-      
+
       setMessages(
         mapChatArray(data.result) || 'No result returned from the API'
       )

@@ -6,8 +6,8 @@ import {
   filterMessagesByUser,
 } from '../../utils/helpers'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { MessageWithAuthUser } from '@/types/types';
-import { handlePromptOnly, handlePromptWithImage } from '@/utils/api/chat';
+import { MessageWithAuthUser } from '@/types/types'
+import { handlePromptOnly, handlePromptWithImage } from '@/utils/api/chat'
 
 export const config = {
   api: {
@@ -15,11 +15,11 @@ export const config = {
   },
 }
 
-export let messagesWithUser: MessageWithAuthUser[] = [];
+export let messagesWithUser: MessageWithAuthUser[] = []
 
 export const updateMessagesWithUser = (newMessages: MessageWithAuthUser[]) => {
-  messagesWithUser = newMessages;
-};
+  messagesWithUser = newMessages
+}
 
 export default async function visualAnalysis(
   req: NextApiRequest,

@@ -15,38 +15,43 @@ const TextResult = ({ messages }: TextResultProps) => {
   const [tooltipMessage, setTooltipMessage] = useState<string | null>(null)
 
   const fallbackCopyTextToClipboard = (text: string) => {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed"; // Prevent scrolling to bottom of page
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed' // Prevent scrolling to bottom of page
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
 
     try {
-      const successful = document.execCommand('copy');
-      const msg = successful ? 'Copied to clipboard' : 'Unable to copy';
-      setTooltipMessage(msg);
+      const successful = document.execCommand('copy')
+      const msg = successful ? 'Copied to clipboard' : 'Unable to copy'
+      setTooltipMessage(msg)
     } catch (err) {
-      console.error('Fallback: Unable to copy', err);
-      setTooltipMessage('Failed to copy to clipboard');
+      console.error('Fallback: Unable to copy', err)
+      setTooltipMessage('Failed to copy to clipboard')
     }
 
-    document.body.removeChild(textArea);
+    document.body.removeChild(textArea)
   }
 
   const copyToClipboard = () => {
-    const textToCopy = assistantRef.current ? assistantRef.current.innerText : '';
+    const textToCopy = assistantRef.current
+      ? assistantRef.current.innerText
+      : ''
     if (!navigator.clipboard) {
-      fallbackCopyTextToClipboard(textToCopy);
+      fallbackCopyTextToClipboard(textToCopy)
     } else {
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        setTooltipMessage('Copied to clipboard');
-      }).catch((err) => {
-        console.error('Unable to copy text to clipboard', err);
-        fallbackCopyTextToClipboard(textToCopy);
-      });
+      navigator.clipboard
+        .writeText(textToCopy)
+        .then(() => {
+          setTooltipMessage('Copied to clipboard')
+        })
+        .catch((err) => {
+          console.error('Unable to copy text to clipboard', err)
+          fallbackCopyTextToClipboard(textToCopy)
+        })
     }
-    setTimeout(() => setTooltipMessage(null), 2000);
+    setTimeout(() => setTooltipMessage(null), 2000)
   }
 
   if (Array.isArray(messages)) {

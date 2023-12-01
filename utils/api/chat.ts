@@ -19,7 +19,11 @@ const POLL_TIMEOUT = 60000
 
 const openai = new OpenAI()
 
-export const handlePromptOnly = async (filteredMessages: MessageWithoutUser[], user: string, res: NextApiResponse) => {
+export const handlePromptOnly = async (
+  filteredMessages: MessageWithoutUser[],
+  user: string,
+  res: NextApiResponse
+) => {
   try {
     const chatCompletion = await openai.chat.completions.create({
       model: 'gpt-4-1106-preview',
@@ -27,82 +31,96 @@ export const handlePromptOnly = async (filteredMessages: MessageWithoutUser[], u
       temperature: 0.8,
     })
     const response = chatCompletion.choices[0].message?.content
-    const messagesWithUserWithAssistant = addAssistantMessage(user, response, messagesWithUser)
+    const messagesWithUserWithAssistant = addAssistantMessage(
+      user,
+      response,
+      messagesWithUser
+    )
     updateMessagesWithUser(messagesWithUserWithAssistant)
     filteredMessages.push({ role: 'assistant', content: response ?? '' })
-  
+
     console.log({ messagesWithUser })
     console.log({ filteredMessages })
-  
+
     return res.status(200).json({ result: filteredMessages.slice(-10) })
   } catch (error: any) {
     handleError(error, res)
   }
 }
 
-export const handlePromptWithImage = async (filteredMessages: MessageWithoutUser[], user: string, uploadedFile: formidable.File[], prompt: string, res: NextApiResponse) => {
+export const handlePromptWithImage = async (
+  filteredMessages: MessageWithoutUser[],
+  user: string,
+  uploadedFile: formidable.File[],
+  prompt: string,
+  res: NextApiResponse
+) => {
   const uploadedFileValidity = isUploadedFileValid(uploadedFile, res)
-    if (!uploadedFileValidity) return
+  if (!uploadedFileValidity) return
 
-    const originalImagePath = uploadedFile[0].filepath
+  const originalImagePath = uploadedFile[0].filepath
 
-    let imagePath, fileType
-    const tempDirectory = '/tmp'
+  let imagePath, fileType
+  const tempDirectory = '/tmp'
 
-    try {
-      // Get the file extension from the content type
-      const contentType = uploadedFile[0].originalFilename
-      const contentTypeParts = contentType?.split('.')
-      fileType = contentTypeParts?.pop()
+  try {
+    // Get the file extension from the content type
+    const contentType = uploadedFile[0].originalFilename
+    const contentTypeParts = contentType?.split('.')
+    fileType = contentTypeParts?.pop()
 
-      // Ensure a valid file type is obtained
-      if (!fileType) {
-        throw new Error('Unable to determine file type')
-      }
-      const tempFilePath = path.join(tempDirectory, `tempImage.${fileType}`)
-      await fs.promises.rename(originalImagePath, tempFilePath)
-      imagePath = tempFilePath
-
-      // Poll for the final image
-      await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT)
-
-      const base64Image = encodeImage(imagePath)
-
-      const chatCompletion = await openai.chat.completions.create({
-        model: 'gpt-4-vision-preview',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: prompt },
-              {
-                type: 'image_url',
-                image_url: { url: `data:image/jpeg;base64,${base64Image}` },
-              },
-            ],
-          },
-        ],
-        max_tokens: 600,
-      })
-      const response = chatCompletion.choices[0].message?.content
-      const messagesWithUserWithAssistant = addAssistantMessage(user, response, messagesWithUser)
-      updateMessagesWithUser(messagesWithUserWithAssistant)
-      filteredMessages.push({ role: 'assistant', content: response ?? '' })
-      
-      console.log({ messagesWithUser })
-      console.log({ filteredMessages })
-
-      res.status(200).json({ result: filteredMessages.slice(-10) })
-    } catch (error: any) {
-      handleError(error, res)
-    } finally {
-      // Remove the temporary image file
-      try {
-        await fs.promises.unlink(imagePath as PathLike)
-      } catch (unlinkError: any) {
-        console.error(`Error deleting image: ${unlinkError.message}`)
-      }
+    // Ensure a valid file type is obtained
+    if (!fileType) {
+      throw new Error('Unable to determine file type')
     }
+    const tempFilePath = path.join(tempDirectory, `tempImage.${fileType}`)
+    await fs.promises.rename(originalImagePath, tempFilePath)
+    imagePath = tempFilePath
+
+    // Poll for the final image
+    await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT)
+
+    const base64Image = encodeImage(imagePath)
+
+    const chatCompletion = await openai.chat.completions.create({
+      model: 'gpt-4-vision-preview',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            {
+              type: 'image_url',
+              image_url: { url: `data:image/jpeg;base64,${base64Image}` },
+            },
+          ],
+        },
+      ],
+      max_tokens: 600,
+    })
+    const response = chatCompletion.choices[0].message?.content
+    const messagesWithUserWithAssistant = addAssistantMessage(
+      user,
+      response,
+      messagesWithUser
+    )
+    updateMessagesWithUser(messagesWithUserWithAssistant)
+    filteredMessages.push({ role: 'assistant', content: response ?? '' })
+
+    console.log({ messagesWithUser })
+    console.log({ filteredMessages })
+
+    res.status(200).json({ result: filteredMessages.slice(-10) })
+  } catch (error: any) {
+    handleError(error, res)
+  } finally {
+    // Remove the temporary image file
+    try {
+      await fs.promises.unlink(imagePath as PathLike)
+    } catch (unlinkError: any) {
+      console.error(`Error deleting image: ${unlinkError.message}`)
+    }
+  }
 }
 
 export const handleError = (error: any, res: NextApiResponse) => {

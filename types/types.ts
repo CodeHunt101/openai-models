@@ -1,12 +1,12 @@
 export type Message = { user?: string; assistant?: string }
 export type MessageWithAuthUser = {
-  role: string;
-  content: string;
-  user: string;
+  role: string
+  content: string
+  user: string
 }
 export type MessageWithoutUser = {
-  role: string;
-  content: string;
+  role: string
+  content: string
 }
 
 //USE IN THE FUTURE
