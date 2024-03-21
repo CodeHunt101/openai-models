@@ -30,7 +30,7 @@ export const handlePromptOnly = async (
   try {
     const chatCompletion = await getChatCompletion(
       filteredMessages,
-      ChatCompletionModel.GPT_4_1106_PREVIEW,
+      ChatCompletionModel.GPT_4_0125_PREVIEW,
       openai
     )
     const response = chatCompletion.choices[0].message?.content
