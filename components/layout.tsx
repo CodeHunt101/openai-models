@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Logout from '@/pages/logout'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import Login from '@/pages/login'
+import Image from 'next/image'
+import logo from '../Images/OpenAI_Logo.svg'
 
 type Props = {
   children?: ReactNode
@@ -28,6 +30,23 @@ export default function Layout({ children }: Props) {
           {!user ? <Login /> : <Logout />}
           {error && <div>{error.message}</div>}
         </div>
+        {!user && (
+          <>
+             <Image
+              src={logo}
+              alt="Selected Image"
+              width={512}
+              height={512}
+              className="selected-image my-4"
+            />
+            <h1>
+              If you require access, email me at{' '}
+              <b>
+                <a href="mailto:recipient@example.com">haroldtm55@gmail.com</a>
+              </b>
+            </h1>
+          </>
+        )}
 
         {user && (
           <>
