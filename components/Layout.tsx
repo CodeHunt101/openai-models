@@ -41,7 +41,9 @@ export default function Layout({ children }: Props) {
             <h1>
               If you require access, email me at{' '}
               <b>
-                <a href="mailto:recipient@example.com">haroldtm55@gmail.com</a>
+                <a href="mailto:haroldtm55@gmail.com" target="_blank">
+                  haroldtm55@gmail.com
+                </a>
               </b>
             </h1>
           </>
