@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import TextResult from '@/components/textResult'
+import TextResult from '@/components/TextResult'
+import { FileInput } from '@/components/FileInput'
+import { FileType } from '@/types/types'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default function Audios() {
   const [result, setResult] = useState('')
@@ -80,20 +83,13 @@ export default function Audios() {
         className="form-control w-full max-w-lg"
         encType="multipart/form-data"
       >
-        <input
-          type="file"
-          id="file-input"
-          name="audio"
-          className="file-input file-input-bordered w-full max-w-xs m-auto"
-          accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm"
+        <FileInput
+          fileType={FileType.AUDIO}
           onChange={onAudioChange}
+          style={{ marginAuto: true }}
         />
         <label className="label"></label>
-        <div className="flex justify-center">
-          <button className="btn btn-primary" disabled={loading}>
-            Generate transcript
-          </button>
-        </div>
+        <SubmitButton title="Generate transcript" disabled={loading} />
       </form>
       {loading && <span className="loading loading-dots loading-lg"></span>}
       {result && <TextResult messages={result} />}

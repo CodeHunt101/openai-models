@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import Image from 'next/image'
-import Form from '@/components/form'
+import Form from '@/components/Form'
 import { submitRequest } from '@/utils/client'
 
 export default function Images() {

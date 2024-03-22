@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react'
-import SwitchTheme from './switchTheme'
-import Link from 'next/link'
+import SwitchTheme from './SwitchTheme'
 import { faComments, faFileAudio } from '@fortawesome/free-solid-svg-icons'
 import { faImages as regularFaImages } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Logout from '@/pages/logout'
 import { useUser } from '@auth0/nextjs-auth0/client'
-import Login from '@/pages/login'
+import { Login } from '@/pages/login'
 import Image from 'next/image'
 import logo from '../Images/OpenAI_Logo.svg'
+import { MenuElement } from './MenuElement'
 
 type Props = {
   children?: ReactNode
@@ -32,12 +31,12 @@ export default function Layout({ children }: Props) {
         </div>
         {!user && (
           <>
-             <Image
+            <Image
               src={logo}
-              alt="Selected Image"
+              alt="logo"
               width={512}
               height={512}
-              className="selected-image my-4"
+              className="my-4 bg-[#faf7f8] rounded-lg"
             />
             <h1>
               If you require access, email me at{' '}
@@ -51,36 +50,23 @@ export default function Layout({ children }: Props) {
         {user && (
           <>
             <ul className="menu bg-base-100 p-2 rounded-box flex flex-row justify-center">
-              <li>
-                <Link href={'/chat'}>
-                  <FontAwesomeIcon icon={faComments} />
-                  Chats
-                </Link>
-              </li>
-              <li>
-                <Link href={'/images'}>
-                  <FontAwesomeIcon icon={regularFaImages} />
-                  Image Generation
-                </Link>
-              </li>
-              <li>
-                <Link href={'/audios'}>
-                  <FontAwesomeIcon icon={faFileAudio} />
-                  Voice Transcription
-                </Link>
-              </li>
-              {/* <li>
-                <Link href={'/ace-assistant'}>
-                  <FontAwesomeIcon icon={faFileAudio} />
-                  ACE Assistant
-                </Link>
-              </li> */}
-              <li>
-                <Link href={'/ace-assistant-image'}>
-                  <FontAwesomeIcon icon={faFileAudio} />
-                  ACE Assistant Image
-                </Link>
-              </li>
+              <MenuElement icon={faComments} route="/chat" title="Chats" />
+              <MenuElement
+                icon={regularFaImages}
+                route="/images"
+                title="Image Generation"
+              />
+              <MenuElement
+                icon={faFileAudio}
+                route="/audios"
+                title="Voice Transcription"
+              />
+              {/* <MenuElement icon={faFileAudio} route="/ace-assistant" title="ACE Assistant" /> */}
+              <MenuElement
+                icon={faFileAudio}
+                route="/ace-assistant-image"
+                title="ACE Assistant Image"
+              />
             </ul>
             <div className="m-auto">{children}</div>
           </>

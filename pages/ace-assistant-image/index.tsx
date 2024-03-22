@@ -1,8 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react'
-import TextResult from '@/components/textResult'
-import { Message } from '../../types/types'
+import TextResult from '@/components/TextResult'
+import { FileType, Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { submitRequest } from '@/utils/client'
+import { SubmitButton } from '@/components/SubmitButton'
+import { FileInput } from '@/components/FileInput'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)
@@ -144,20 +146,13 @@ export default function AceAssistantImage() {
         <label className="label">
           <span className="label-text">Enter your prompt</span>
         </label>
-        <input
-          type="file"
-          id="file-input"
-          name="image"
-          className="file-input file-input-bordered w-full max-w-xs"
-          accept=".png, .jpeg, .jpg, .webp, .gif"
+        <FileInput
+          fileType={FileType.IMAGE}
           onChange={onImageChange}
+          style={{ marginAuto: true }}
         />
         <label className="label"></label>
-        <div className="flex justify-center">
-          <button className="btn btn-primary" disabled={loading}>
-            Generate response
-          </button>
-        </div>
+        <SubmitButton title="Generate response" disabled={loading} />
       </form>
     </div>
   )

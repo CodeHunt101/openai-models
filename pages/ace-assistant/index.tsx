@@ -1,6 +1,6 @@
 import { FormEvent, useState, useCallback, useEffect, useMemo } from 'react'
-import Form from '@/components/form'
-import TextResult from '@/components/textResult'
+import Form from '@/components/Form'
+import TextResult from '@/components/TextResult'
 import { deleteMessages, submitRequest } from '@/utils/client'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'

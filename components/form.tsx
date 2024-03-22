@@ -1,12 +1,13 @@
 import {
   faComments,
   faPenClip,
-  faRobot,
   faFileAudio,
 } from '@fortawesome/free-solid-svg-icons'
 import { faImages } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
+import { TextArea } from './TextArea'
+import { SubmitButton } from './SubmitButton'
 
 type FormProps = {
   input: string
@@ -52,21 +53,13 @@ const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
           }
         />
       ) : (
-        <textarea
-          value={input}
-          onChange={handleChange}
-          className="textarea textarea-primary textarea-lg"
-        ></textarea>
+        <TextArea input={input} onChange={handleChange} />
       )}
       <label className="label"></label>
-      <div className="flex justify-center">
-        <button
-          className="btn btn-primary"
-          disabled={loading || input.length < 2}
-        >
-          Generate response
-        </button>
-      </div>
+      <SubmitButton
+        title="Generate response"
+        disabled={loading || input.length < 2}
+      />
     </form>
   )
 }

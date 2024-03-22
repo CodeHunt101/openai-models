@@ -1,9 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react'
-import TextResult from '@/components/textResult'
+import TextResult from '@/components/TextResult'
 import Image from 'next/image'
 import { mapChatArray } from '@/utils/utils'
-import { Message } from '../../types/types'
+import { FileType, Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
+import { TextArea } from '@/components/TextArea'
+import { FileInput } from '@/components/FileInput'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default function Chat() {
   const [loading, setLoading] = useState(false)
@@ -155,28 +158,13 @@ export default function Chat() {
         <label className="label">
           <span className="label-text">Enter your prompt</span>
         </label>
-        <textarea
-          value={input}
-          onChange={onTextChange}
-          className="textarea textarea-primary textarea-lg"
-        ></textarea>
-        <input
-          type="file"
-          id="file-input"
-          name="image"
-          className="file-input file-input-bordered w-full max-w-xs"
-          accept=".png, .jpeg, .jpg, .webp, .gif"
-          onChange={onImageChange}
-        />
+        <TextArea input={input} onChange={onTextChange} />
+        <FileInput fileType={FileType.IMAGE} onChange={onImageChange} />
         <label className="label"></label>
-        <div className="flex justify-center">
-          <button
-            className="btn btn-primary"
-            disabled={loading || input.length < 2}
-          >
-            Generate response
-          </button>
-        </div>
+        <SubmitButton
+          title="Generate response"
+          disabled={loading || input.length < 2}
+        />
       </form>
     </div>
   )

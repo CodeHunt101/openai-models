@@ -31,6 +31,16 @@ export enum AudioTranscriptionModel {
   WHISPER_1 = "'whisper-1",
 }
 
+export enum FileType {
+  IMAGE = 'image',
+  AUDIO = 'audio',
+}
+
+export enum FileFormat {
+  IMAGE = '.png, .jpeg, .jpg, .webp, .gif',
+  AUDIO = '.mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm',
+}
+
 //USE IN THE FUTURE
 // type PromptItem = {
 //   type: 'text' | 'image_url';
