@@ -138,8 +138,6 @@ const TextResult = ({ messages }: TextResultProps) => {
       </div>
     </div>
   )
-
-  // return <p>{messages}</p>;
 }
 
 export default TextResult
