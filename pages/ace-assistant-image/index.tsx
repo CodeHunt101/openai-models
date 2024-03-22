@@ -1,10 +1,11 @@
 import { FormEvent, useEffect, useState } from 'react'
 import TextResult from '@/components/TextResult'
-import { FileType, Message } from '../../types/types'
+import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { submitRequest } from '@/utils/client'
 import { SubmitButton } from '@/components/SubmitButton'
 import { FileInput } from '@/components/FileInput'
+import { FileType } from '@/types/enums'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)

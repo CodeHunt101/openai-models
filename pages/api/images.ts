@@ -1,4 +1,4 @@
-import { ImageGenerationModel } from '@/types/types'
+import { ImageGenerationModel } from '@/types/enums'
 import { validatePromptFromJson } from '@/utils/helpers'
 import { getImageGeneration } from '@/utils/openai-requests'
 import { NextApiRequest, NextApiResponse } from 'next'

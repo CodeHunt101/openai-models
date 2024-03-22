@@ -4,7 +4,7 @@ import path from 'path'
 import formidable from 'formidable'
 import { isUploadedFileValid, pollForFile } from '../../utils/helpers'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { AudioTranscriptionModel } from '@/types/types'
+import { AudioTranscriptionModel } from '@/types/enums'
 import { getAudioTranscription } from '@/utils/openai-requests'
 
 // Constants

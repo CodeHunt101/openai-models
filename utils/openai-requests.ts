@@ -2,7 +2,7 @@ import {
   AudioTranscriptionModel,
   ChatCompletionModel,
   ImageGenerationModel,
-} from '@/types/types'
+} from '@/types/enums'
 import { ReadStream } from 'fs'
 import OpenAI from 'openai'
 import { ChatCompletionMessageParam } from 'openai/resources'

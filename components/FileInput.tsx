@@ -1,4 +1,4 @@
-import { FileFormat, FileType } from '@/types/types'
+import { FileFormat, FileType } from '@/types/enums'
 import { FormEvent } from 'react'
 
 type FileInputProps = {

@@ -9,7 +9,7 @@ import {
   addAssistantMessage,
 } from '../helpers'
 import { NextApiResponse } from 'next'
-import { ChatCompletionModel } from '@/types/types'
+import { ChatCompletionModel } from '@/types/enums'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { messagesWithUser, updateMessagesWithUser } from '@/pages/api/chat'
 import {

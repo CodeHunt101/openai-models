@@ -1,7 +1,9 @@
 import Link from 'next/link'
 
-export const Login = () => (
-  <Link href="/api/auth/login">
-    <button className="btn btn-neutral">Log in</button>
-  </Link>
-)
+export default function Login() {
+  return (
+    <Link href="/api/auth/login">
+      <button className="btn btn-neutral">Log in</button>
+    </Link>
+  )
+}

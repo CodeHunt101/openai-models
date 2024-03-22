@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import TextResult from '@/components/TextResult'
 import { FileInput } from '@/components/FileInput'
-import { FileType } from '@/types/types'
+import { FileType } from '@/types/enums'
 import { SubmitButton } from '@/components/SubmitButton'
 
 export default function Audios() {

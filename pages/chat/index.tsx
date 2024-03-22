@@ -2,11 +2,12 @@ import { FormEvent, useEffect, useState } from 'react'
 import TextResult from '@/components/TextResult'
 import Image from 'next/image'
 import { mapChatArray } from '@/utils/utils'
-import { FileType, Message } from '../../types/types'
+import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { TextArea } from '@/components/TextArea'
 import { FileInput } from '@/components/FileInput'
 import { SubmitButton } from '@/components/SubmitButton'
+import { FileType } from '@/types/enums'
 
 export default function Chat() {
   const [loading, setLoading] = useState(false)
