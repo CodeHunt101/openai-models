@@ -2,33 +2,30 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build env variables
-      run: |
-        touch .env.local
-        echo OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} >> .env.local
-        echo AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} >> .env.local
-        echo AUTH0_BASE_URL=${{ secrets.AUTH0_BASE_URL }} >> .env.local
-        echo AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }} >> .env.local
-        echo AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .env.local
-        echo AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} >> .env.local
-    - name: Build the Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/openai-models:latest --platform linux/amd64 .
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Push to Docker Hub
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/openai-models:latest
+      - uses: actions/checkout@v3
+      - name: Build env variables
+        run: |
+          touch .env.local
+          echo OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} >> .env.local
+          echo AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} >> .env.local
+          echo AUTH0_BASE_URL=${{ secrets.AUTH0_BASE_URL }} >> .env.local
+          echo AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }} >> .env.local
+          echo AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .env.local
+          echo AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} >> .env.local
+      - name: Build the Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/openai-models:latest --platform linux/amd64 .
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/openai-models:latest
