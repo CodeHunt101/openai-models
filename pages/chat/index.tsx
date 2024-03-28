@@ -4,10 +4,8 @@ import Image from 'next/image'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
-import { TextArea } from '@/components/TextArea'
-import { FileInput } from '@/components/FileInput'
-import { SubmitButton } from '@/components/SubmitButton'
-import { FileType } from '@/types/enums'
+import ChatForm from './ChatForm'
+import { Loading } from '@/components/Loading'
 
 export default function Chat() {
   const [loading, setLoading] = useState(false)
@@ -61,7 +59,7 @@ export default function Chat() {
     setInput((e.target as HTMLFormElement).value)
   }
 
-  async function onSubmit(event: any) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setLoading(true)
     const formData = new FormData()
@@ -149,24 +147,14 @@ export default function Chat() {
           <TextResult messages={messages} />
         </>
       )}
-      {loading && <span className="loading loading-dots loading-lg"></span>}
-      <form
-        method="post"
-        onSubmit={onSubmit}
-        className="form-control w-full max-w-lg"
-        encType="multipart/form-data"
-      >
-        <label className="label">
-          <span className="label-text">Enter your prompt</span>
-        </label>
-        <TextArea input={input} onChange={onTextChange} />
-        <FileInput fileType={FileType.IMAGE} onChange={onImageChange} />
-        <label className="label"></label>
-        <SubmitButton
-          title="Generate response"
-          disabled={loading || input.length < 2}
-        />
-      </form>
+      {loading && <Loading />}
+      <ChatForm
+        input={input}
+        handleSubmit={handleSubmit}
+        onTextChange={onTextChange}
+        onImageChange={onImageChange}
+        loading={loading}
+      />
     </div>
   )
 }

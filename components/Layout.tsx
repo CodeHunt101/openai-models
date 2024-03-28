@@ -8,6 +8,7 @@ import Login from '@/pages/login'
 import Image from 'next/image'
 import logo from '../Images/OpenAI_Logo.svg'
 import { MenuElement } from './MenuElement'
+import { Loading } from './Loading'
 
 type Props = {
   children?: ReactNode
@@ -23,9 +24,7 @@ export default function Layout({ children }: Props) {
           <h1>
             By <b>Harold Torres</b>
           </h1>
-          {isLoading && (
-            <span className="loading loading-dots loading-lg"></span>
-          )}
+          {isLoading && <Loading />}
           {!user ? <Login /> : <Logout />}
           {error && <div>{error.message}</div>}
         </div>

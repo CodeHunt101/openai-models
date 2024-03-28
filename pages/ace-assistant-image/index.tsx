@@ -6,6 +6,7 @@ import { submitRequest } from '@/utils/client'
 import { SubmitButton } from '@/components/SubmitButton'
 import { FileInput } from '@/components/FileInput'
 import { FileType } from '@/types/enums'
+import { Loading } from '@/components/Loading'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)
@@ -136,7 +137,7 @@ export default function AceAssistantImage() {
           Start New Thread
         </button>
       )}
-      {loading && <span className="loading loading-dots loading-lg"></span>}
+      {loading && <Loading />}
       {messages?.length > 0 && <TextResult messages={messages} />}
       <form
         method="post"

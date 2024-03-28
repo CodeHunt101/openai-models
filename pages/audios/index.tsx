@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import TextResult from '@/components/TextResult'
-import { FileInput } from '@/components/FileInput'
-import { FileType } from '@/types/enums'
-import { SubmitButton } from '@/components/SubmitButton'
+import { Loading } from '@/components/Loading'
+import AudioForm from './AudioForm'
 
 export default function Audios() {
   const [result, setResult] = useState('')
@@ -32,7 +31,7 @@ export default function Audios() {
     }
   }
 
-  async function onSubmit(event: any) {
+  async function handleSubmit(event: any) {
     event.preventDefault()
     setLoading(true)
     if (!selectedFile) {
@@ -77,21 +76,12 @@ export default function Audios() {
       <div className="badge badge-primary text-lg p-5 mb-5">
         Voice Transcription
       </div>
-      <form
-        method="post"
-        onSubmit={onSubmit}
-        className="form-control w-full max-w-lg"
-        encType="multipart/form-data"
-      >
-        <FileInput
-          fileType={FileType.AUDIO}
-          onChange={onAudioChange}
-          style={{ marginAuto: true }}
-        />
-        <label className="label"></label>
-        <SubmitButton title="Generate transcript" disabled={loading} />
-      </form>
-      {loading && <span className="loading loading-dots loading-lg"></span>}
+      <AudioForm
+        loading={loading}
+        handleSubmit={handleSubmit}
+        onAudioChange={onAudioChange}
+      />
+      {loading && <Loading />}
       {result && <TextResult messages={result} />}
     </div>
   )

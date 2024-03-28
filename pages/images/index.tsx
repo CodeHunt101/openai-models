@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import Form from '@/components/Form'
 import { submitRequest } from '@/utils/client'
+import { Loading } from '@/components/Loading'
 
 export default function Images() {
   const [input, setInput] = useState('')
@@ -44,7 +45,7 @@ export default function Images() {
         handleSubmit={onSubmit}
         loading={loading}
       />
-      {loading && <span className="loading loading-dots loading-lg"></span>}
+      {loading && <Loading />}
       {Array.isArray(result) && (
         <>
           <p className="my-5">{prompt}</p>

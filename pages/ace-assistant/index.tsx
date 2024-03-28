@@ -6,6 +6,7 @@ import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
+import { Loading } from '@/components/Loading'
 
 export default function AceAssistant() {
   const [input, setInput] = useState('')
@@ -95,7 +96,7 @@ export default function AceAssistant() {
           Start New Thread
         </button>
       )} */}
-      {loading && <span className="loading loading-dots loading-lg"></span>}
+      {loading && <Loading />}
       {messages.length > 0 && <TextResult messages={messages} />}
       <Form
         input={input}
