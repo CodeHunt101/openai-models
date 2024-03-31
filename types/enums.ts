@@ -21,7 +21,7 @@ export enum ImageGenerationModel {
 }
 
 export enum AudioTranscriptionModel {
-  WHISPER_1 = "'whisper-1",
+  WHISPER_1 = 'whisper-1',
 }
 
 export enum FileType {
