@@ -7,10 +7,12 @@ import { SubmitButton } from '@/components/SubmitButton'
 import { FileInput } from '@/components/FileInput'
 import { FileType } from '@/types/enums'
 import { Loading } from '@/components/Loading'
+import Image from 'next/image'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [selectedImageURL, setSelectedImageURL] = useState('')
   const [messages, setMessages] = useState<Message[] | string>([])
   const { user } = useUser()
 
@@ -88,6 +90,9 @@ export default function AceAssistantImage() {
         user?.email,
         transcribedText.result[transcribedText.result.length - 1].content
       )
+      if (selectedFile) {
+        setSelectedImageURL(URL.createObjectURL(selectedFile))
+      }
       setMessages(
         // mapChatArray(assistantResponse) || 'No result returned from the API'
         assistantResponse
@@ -138,7 +143,20 @@ export default function AceAssistantImage() {
         </button>
       )}
       {loading && <Loading />}
-      {messages?.length > 0 && <TextResult messages={messages} />}
+      {messages?.length > 0 && (
+        <>
+          {selectedImageURL && (
+            <Image
+              src={selectedImageURL}
+              alt="Selected Image"
+              width={512}
+              height={512}
+              className="selected-image my-4"
+            />
+          )}
+          <TextResult messages={messages} />
+        </>
+      )}
       <form
         method="post"
         onSubmit={onSubmit}
