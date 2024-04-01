@@ -14,8 +14,8 @@ type FormProps = {
   loading: boolean
   handleChange: (
     event:
-      | React.FormEvent<HTMLTextAreaElement>
-      | React.FormEvent<HTMLInputElement>
+      | FormEvent<HTMLTextAreaElement>
+      | FormEvent<HTMLInputElement>
   ) => void
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }
