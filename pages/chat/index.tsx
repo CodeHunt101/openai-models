@@ -5,8 +5,8 @@ import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import ChatForm from './ChatForm'
 import { Loading } from '@/components/Loading'
-import { useChatMessages } from './hooks/useChatMessages'
-import { useChatForm } from './hooks/useChatForm'
+import useChatMessages from './hooks/useChatMessages'
+import useChatForm from './hooks/useChatForm'
 
 export default function Chat() {
   const { user } = useUser()

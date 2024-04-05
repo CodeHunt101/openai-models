@@ -3,7 +3,7 @@ import { useUser } from '@auth0/nextjs-auth0/client'
 import { mapChatArray } from '@/utils/utils'
 import { Message } from '@/types/types'
 
-export function useChatForm(
+export default function useChatForm(
   setMessages: Dispatch<SetStateAction<string | Message[]>>,
   setLoading: Dispatch<SetStateAction<boolean>>
 ) {

@@ -100,8 +100,8 @@ export default function AceAssistant() {
       {messages.length > 0 && <TextResult messages={messages} />}
       <Form
         input={input}
-        handleChange={handleChange}
-        handleSubmit={onSubmit}
+        onChange={handleChange}
+        onSubmit={onSubmit}
         loading={loading}
       />
     </div>

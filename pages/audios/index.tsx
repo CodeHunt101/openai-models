@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react'
 import TextResult from '@/components/TextResult'
 import { Loading } from '@/components/Loading'
 import AudioForm from './AudioForm'
-import { useAudioForm } from './hooks/useAudioForm'
+import useAudioForm from './hooks/useAudioForm'
 
 export default function Audios() {
   const {

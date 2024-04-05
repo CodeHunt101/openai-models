@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react"
 
-export function useAudioForm() {
+export default function useAudioForm() {
   const [result, setResult] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)

@@ -3,7 +3,7 @@ import { mapChatArray } from '@/utils/utils'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-export function useChatMessages(
+export default function useChatMessages(
   setMessages: Dispatch<SetStateAction<string | Message[]>>,
   setLoading: Dispatch<SetStateAction<boolean>>
 ) {
