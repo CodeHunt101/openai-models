@@ -1,109 +1,27 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { useState } from 'react'
 import TextResult from '@/components/TextResult'
 import Image from 'next/image'
-import { mapChatArray } from '@/utils/utils'
 import { Message } from '../../types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import ChatForm from './ChatForm'
 import { Loading } from '@/components/Loading'
+import { useChatMessages } from './hooks/useChatMessages'
+import { useChatForm } from './hooks/useChatForm'
 
 export default function Chat() {
-  const [loading, setLoading] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [input, setInput] = useState('')
-  const [selectedImageURL, setSelectedImageURL] = useState('')
-  const [messages, setMessages] = useState<Message[] | string>([])
   const { user } = useUser()
+  const [messages, setMessages] = useState<Message[] | string>([])
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const formData = new FormData()
-    formData.append('user', user?.email || '')
-    formData.append('getMessages', true.toString())
-    const getMessages = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          body: formData,
-        })
+  useChatMessages(setMessages, setLoading);
 
-        const { result } = await response.json()
-        setMessages(mapChatArray(result))
-      } catch (error) {
-        console.error('Error fetching messages:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    getMessages()
-  }, [user?.email])
-
-  const onImageChange = (e: FormEvent<HTMLInputElement>) => {
-    const fileInput = e.target as HTMLInputElement
-    const file = fileInput.files?.[0]
-    if (file) {
-      const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif']
-      const fileExtension = file.name.split('.').pop()?.toLowerCase()
-      if (allowedExtensions.includes(`.${fileExtension}`)) {
-        setSelectedFile(file)
-      } else {
-        alert(
-          'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
-        )
-        fileInput.value = ''
-      }
-    }
-  }
-
-  const onTextChange = (e: FormEvent<HTMLTextAreaElement>) => {
-    setInput((e.target as HTMLFormElement).value)
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
-    const formData = new FormData()
-    if (selectedFile) {
-      formData.append('file', selectedFile)
-    }
-    formData.append('prompt', input)
-    formData.append('user', user?.email || '')
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await response.json()
-      if (response.status !== 200) {
-        throw (
-          data.error ||
-          new Error(`Request failed with status ${response.status}`)
-        )
-      }
-      if (selectedFile) {
-        setSelectedImageURL(URL.createObjectURL(selectedFile))
-      }
-
-      setMessages(
-        mapChatArray(data.result) || 'No result returned from the API'
-      )
-      setInput('')
-      // Reset the file input element here
-      const fileInput = document.getElementById(
-        'file-input'
-      ) as HTMLInputElement
-      if (fileInput) {
-        fileInput.value = ''
-      }
-    } catch (error: any) {
-      // Consider implementing your own error handling logic here
-      console.error(error)
-      alert(error.message)
-    }
-    setLoading(false)
-    setSelectedFile(null)
-  }
+  const {
+    input,
+    selectedImageURL,
+    handleImageChange,
+    handleTextChange,
+    handleSubmit,
+  } = useChatForm(setMessages, setLoading)
 
   const handleNewThread = async () => {
     const formData = new FormData()
@@ -151,8 +69,8 @@ export default function Chat() {
       <ChatForm
         input={input}
         handleSubmit={handleSubmit}
-        onTextChange={onTextChange}
-        onImageChange={onImageChange}
+        onTextChange={handleTextChange}
+        onImageChange={handleImageChange}
         loading={loading}
       />
     </div>
