@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import TextResult from '@/components/TextResult'
 import { Loading } from '@/components/Loading'
 import AudioForm from './AudioForm'
@@ -31,7 +31,7 @@ export default function Audios() {
     }
   }
 
-  async function handleSubmit(event: any) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setLoading(true)
     if (!selectedFile) {
@@ -78,7 +78,7 @@ export default function Audios() {
       </div>
       <AudioForm
         loading={loading}
-        handleSubmit={handleSubmit}
+        onSubmit={handleSubmit}
         onAudioChange={onAudioChange}
       />
       {loading && <Loading />}

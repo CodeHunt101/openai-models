@@ -56,7 +56,7 @@ export default function AceAssistantImage() {
     }
   }
 
-  async function onSubmit(event: any) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setLoading(true)
     if (!selectedFile) {

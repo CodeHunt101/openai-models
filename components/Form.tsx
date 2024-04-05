@@ -5,26 +5,26 @@ import { SubmitButton } from './SubmitButton'
 type FormProps = {
   input: string
   loading: boolean
-  handleChange: (
+  onChange: (
     event: FormEvent<HTMLTextAreaElement> | FormEvent<HTMLInputElement>
   ) => void
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
-const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
+const Form = ({ input, onChange, onSubmit, loading }: FormProps) => {
   const [path, setPath] = useState('')
   useEffect(() => {
     setPath(window.location.pathname)
   }, [])
 
   return (
-    <form onSubmit={handleSubmit} className="form-control w-full max-w-lg">
+    <form onSubmit={onSubmit} className="form-control w-full max-w-lg">
       <label className="label">
         <span className="label-text">Enter your prompt</span>
       </label>
       {path === '/audios' ? (
         <input
           value={input}
-          onChange={handleChange}
+          onChange={onChange}
           type={path === '/audios' ? 'file' : 'text'}
           placeholder="Type here"
           className={
@@ -34,7 +34,7 @@ const Form = ({ input, handleChange, handleSubmit, loading }: FormProps) => {
           }
         />
       ) : (
-        <TextArea input={input} onChange={handleChange} />
+        <TextArea input={input} onChange={onChange} />
       )}
       <label className="label"></label>
       <SubmitButton

@@ -10,7 +10,7 @@ export default function Images() {
   const [loading, setLoading] = useState(false)
   const [prompt, setPrompt] = useState('')
 
-  async function onSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setPrompt('')
     setResult('')
@@ -41,8 +41,8 @@ export default function Images() {
       <div className="badge badge-primary text-lg p-5">Create Image</div>
       <Form
         input={input}
-        handleChange={handleChange}
-        handleSubmit={onSubmit}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
         loading={loading}
       />
       {loading && <Loading />}

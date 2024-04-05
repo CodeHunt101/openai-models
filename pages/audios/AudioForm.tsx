@@ -5,18 +5,18 @@ import { FormEvent } from 'react'
 
 type AudioFormProps = {
   loading: boolean
-  handleSubmit: (event: FormEvent<HTMLFormElement>) => void
-  onAudioChange: (event: React.FormEvent<HTMLInputElement>) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onAudioChange: (event: FormEvent<HTMLInputElement>) => void
 }
 
 const AudioForm = ({
-  handleSubmit,
+  onSubmit,
   loading,
   onAudioChange,
 }: AudioFormProps) => (
   <form
     method="post"
-    onSubmit={handleSubmit}
+    onSubmit={onSubmit}
     className="form-control w-full max-w-lg"
     encType="multipart/form-data"
   >
