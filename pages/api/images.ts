@@ -29,7 +29,6 @@ export default async function images(
     console.log(image.data)
     res.status(200).json({ result: image.data })
   } catch (error: any) {
-    // Consider adjusting the error handling logic for your use case
     if (error.response) {
       console.error(error.response.status, error.response.data)
       res.status(error.response.status).json(error.response.data)
