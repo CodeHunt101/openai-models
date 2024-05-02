@@ -4,24 +4,6 @@ Since this is a paid API, if you would like access, please email me at `haroldtm
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
 ### Example using `gpt-4-0125-preview` text generation model
 
 Provides text outputs in response to their inputs.
@@ -51,3 +33,23 @@ Transcribe audio into whatever language the audio is in.
 Upload any screenshot containing an ACE exam question and it will give you the answer.
 
 <img src="https://live.staticflickr.com/65535/53623768971_eec8f33451_o.png" alt="Example Image" width="800">
+
+## Getting Started in Local
+
+Note: Since this is a paid API, you need an access key. Feel free to contact me and I'll provide you with one.
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
