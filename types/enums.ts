@@ -1,4 +1,5 @@
 export enum ChatCompletionModel {
+  GPT_4_O = 'gpt-4o',
   GPT_4_0125_PREVIEW = 'gpt-4-0125-preview',
   GPT_4_1106_PREVIEW = 'gpt-4-1106-preview',
   GPT_4_VISION_PREVIEW = 'gpt-4-vision-preview',

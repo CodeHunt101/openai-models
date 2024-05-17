@@ -30,7 +30,7 @@ export const handlePromptOnly = async (
   try {
     const chatCompletion = await getChatCompletion(
       filteredMessages,
-      ChatCompletionModel.GPT_4_0125_PREVIEW,
+      ChatCompletionModel.GPT_4_O,
       openai
     )
     const response = chatCompletion.choices[0].message?.content
@@ -81,7 +81,7 @@ export const handlePromptWithImage = async (
 
     const chatCompletion = await getChatCompletionWithVisuals(
       prompt,
-      ChatCompletionModel.GPT_4_VISION_PREVIEW,
+      ChatCompletionModel.GPT_4_O,
       base64Image,
       openai
     )
