@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import OpenAI from 'openai'
-import { MessageContentText } from 'openai/resources/beta/threads/messages/messages'
-import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
-
 const openai = new OpenAI()
 
 let thread: Thread | null
@@ -46,7 +43,7 @@ export default async function aceAssistant(
 
       console.log(threadMessages.data)
       const lastMessage = (
-        threadMessages.data[0].content[0] as MessageContentText
+        threadMessages.data[0].content[0] as any
       ).text.value
       res.status(200).json({ lastMessage })
       return
@@ -99,7 +96,7 @@ export default async function aceAssistant(
 
     const messageContentTextData = messages.data.map((messageData) =>
       messageData.content.map(
-        (content) => (content as MessageContentText).text.value
+        (content) => (content as any).text.value
       )
     )[0][0]
 
