@@ -73,7 +73,7 @@ const TextResult = ({ messages }: TextResultProps) => {
                 <kbd className="kbd kbd-md">Assistant</kbd>
                 <div
                   id="asistant-response"
-                  className="prose prose-neutral ml-1 min-w-fit"
+                  className="prose prose-neutral ml-1 max-w-fit"
                   ref={assistantRef}
                 >
                   <ReactMarkdown
@@ -111,7 +111,7 @@ const TextResult = ({ messages }: TextResultProps) => {
           <kbd className="kbd kbd-md">Assistant</kbd>
           <div
             id="asistant-response"
-            className="prose prose-neutral ml-1 min-w-fit"
+            className="prose prose-neutral ml-1 max-w-fit"
             ref={assistantRef}
           >
             <ReactMarkdown
