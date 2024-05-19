@@ -4,13 +4,13 @@ Since this is a paid API, if you would like access, please email me at `haroldtm
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-### Example using `gpt-4-0125-preview` text generation model
+### Example using `gpt-4o` text generation model
 
 Provides text outputs in response to their inputs.
 
 <img src="https://live.staticflickr.com/65535/53603048265_54d82194a1_o.png" alt="Example Image" width="800">
 
-### Example using `gpt-4-vision-preview` vision model
+### Example using `gpt-4o` vision model
 
 Upload an image and it will answer any questions about it.
 
