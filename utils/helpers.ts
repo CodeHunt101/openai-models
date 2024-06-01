@@ -1,5 +1,5 @@
 import { MessageWithAuthUser } from '@/types/types'
-import { Fields } from 'formidable'
+import { Fields, File } from 'formidable'
 import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ChatCompletionMessageParam } from 'openai/resources'
@@ -34,6 +34,26 @@ export function validatePrompt(
     })
     return null
   }
+}
+
+export const isUploadedFileValid = (
+  uploadedFile: File[],
+  res: NextApiResponse
+) => {
+  if (
+    !uploadedFile ||
+    !uploadedFile[0] ||
+    uploadedFile[0].size === 0 ||
+    uploadedFile[0].size > 2e7
+  ) {
+    res.status(400).json({
+      error: {
+        message: 'Please upload a valid file',
+      },
+    })
+    return false
+  }
+  return true
 }
 
 export const areUploadedFilesValid = (
