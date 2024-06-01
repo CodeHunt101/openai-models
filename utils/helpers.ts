@@ -1,5 +1,5 @@
 import { MessageWithAuthUser } from '@/types/types'
-import formidable from 'formidable'
+import { Fields } from 'formidable'
 import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ChatCompletionMessageParam } from 'openai/resources'
@@ -14,7 +14,7 @@ export function validatePromptFromJson(
 }
 
 export function validatePromptFromForm(
-  fields: formidable.Fields<string>,
+  fields: Fields<string>,
   res: NextApiResponse
 ): string | null {
   const prompt = (fields.prompt?.[0] as string) || ''
@@ -36,22 +36,20 @@ export function validatePrompt(
   }
 }
 
-export const isUploadedFileValid = (
-  uploadedFile: formidable.File[],
+export const areUploadedFilesValid = (
+  uploadedFiles: object,
   res: NextApiResponse
 ) => {
-  if (
-    !uploadedFile ||
-    !uploadedFile[0] ||
-    uploadedFile[0].size === 0 ||
-    uploadedFile[0].size > 2e7
-  ) {
-    res.status(400).json({
-      error: {
-        message: 'Please upload a valid file',
-      },
-    })
-    return false
+  for (const [_, fileArr] of Object.entries(uploadedFiles)) {
+    const file = (fileArr as any)[0]
+    if (!file || file.size === 0 || file.size > 2e7) {
+      res.status(400).json({
+        error: {
+          message: 'Please upload a valid files',
+        },
+      })
+      return false
+    }
   }
   return true
 }

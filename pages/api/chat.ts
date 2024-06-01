@@ -54,10 +54,9 @@ export default async function visualAnalysis(
 
     messagesWithUser = addUserMessage(prompt, user, messagesWithUser)
     const filteredMessages = filterMessagesByUser(user, messagesWithUser)
-    const uploadedFile = files.file
 
-    if (uploadedFile) {
-      handlePromptWithImage(filteredMessages, user, uploadedFile, prompt, res)
+    if (Object.entries(files)) {
+      handlePromptWithImage(filteredMessages, user, files, prompt, res)
     } else {
       handlePromptOnly(filteredMessages, user, res)
     }

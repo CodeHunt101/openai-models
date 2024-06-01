@@ -1,11 +1,11 @@
 import OpenAI from 'openai'
 import fs, { PathLike } from 'fs'
 import path from 'path'
-import formidable from 'formidable'
+import { Files } from 'formidable'
 import {
   pollForFile,
   encodeImage,
-  isUploadedFileValid,
+  areUploadedFilesValid,
   addAssistantMessage,
 } from '../helpers'
 import { NextApiResponse } from 'next'
@@ -45,44 +45,57 @@ export const handlePromptOnly = async (
 export const handlePromptWithImage = async (
   filteredMessages: ChatCompletionMessageParam[],
   user: string,
-  uploadedFile: formidable.File[],
+  uploadedFiles: Files<string>,
   prompt: string,
   res: NextApiResponse
 ) => {
-  const uploadedFileValidity = isUploadedFileValid(uploadedFile, res)
+  const jsonUploadedFiles = JSON.parse(JSON.stringify(uploadedFiles))
+  console.log(jsonUploadedFiles)
+
+  const uploadedFileValidity = areUploadedFilesValid(jsonUploadedFiles, res)
   if (!uploadedFileValidity) return
 
-  const originalImagePath = uploadedFile[0].filepath
-
-  let imagePath, fileType
+  const base64Images = []
+  const imagePaths = []
+  const fileTypes = []
   const tempDirectory = '/tmp'
 
-  try {
+  for (const [_, fileArr] of Object.entries(jsonUploadedFiles)) {
+    const uploadedFile = (fileArr as any)[0]
+    const originalImagePath = uploadedFile.filepath
+
     // Get the file extension from the content type
-    const contentType = uploadedFile[0].originalFilename
+    const contentType = uploadedFile.originalFilename
     const contentTypeParts = contentType?.split('.')
-    fileType = contentTypeParts?.pop()
+    const currFileType = contentTypeParts?.pop()
+    fileTypes.push(currFileType)
 
     // Ensure a valid file type is obtained
-    if (!fileType) {
+    if (!fileTypes[fileTypes.length - 1]) {
       throw new Error('Unable to determine file type')
     }
-    const tempFilePath = path.join(tempDirectory, `tempImage.${fileType}`)
+    const tempFilePath = path.join(
+      tempDirectory,
+      `tempImage-${uploadedFile.newFilename}.${currFileType}`
+    )
     await fs.promises.rename(originalImagePath, tempFilePath)
-    imagePath = tempFilePath
+    imagePaths.push(tempFilePath)
 
     // Poll for the final image
-    await pollForFile(imagePath, POLL_INTERVAL, POLL_TIMEOUT)
+    await pollForFile(tempFilePath, POLL_INTERVAL, POLL_TIMEOUT)
 
-    const base64Image = encodeImage(imagePath)
+    const base64Image = encodeImage(tempFilePath)
     if (!base64Image) {
       throw Error('problem with encoding image')
     }
+    base64Images.push(base64Image)
+  }
 
+  try {
     const chatCompletion = await getChatCompletionWithVisuals(
       prompt,
       ChatCompletionModel.GPT_4_O,
-      base64Image,
+      base64Images,
       openai
     )
     const response = chatCompletion.choices[0].message?.content
@@ -93,11 +106,13 @@ export const handlePromptWithImage = async (
     handleError(error, res)
   } finally {
     // Remove the temporary image file
-    try {
-      await fs.promises.unlink(imagePath as PathLike)
-    } catch (unlinkError: any) {
-      console.error(`Error deleting image: ${unlinkError.message}`)
-    }
+    imagePaths.forEach(async (imagePath) => {
+      try {
+        await fs.promises.unlink(imagePath as PathLike)
+      } catch (unlinkError: any) {
+        console.error(`Error deleting image: ${unlinkError.message}`)
+      }
+    })
   }
 }
 

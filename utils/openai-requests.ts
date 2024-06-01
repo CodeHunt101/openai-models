@@ -5,7 +5,10 @@ import {
 } from '@/types/enums'
 import { ReadStream } from 'fs'
 import OpenAI from 'openai'
-import { ChatCompletionMessageParam } from 'openai/resources'
+import {
+  ChatCompletionContentPart,
+  ChatCompletionMessageParam,
+} from 'openai/resources'
 
 export const getChatCompletion = async (
   messages: ChatCompletionMessageParam[],
@@ -21,25 +24,26 @@ export const getChatCompletion = async (
 export const getChatCompletionWithVisuals = async (
   prompt: string,
   model: ChatCompletionModel,
-  base64Image: string,
+  base64Images: string[],
   openai: OpenAI
-) =>
-  await openai.chat.completions.create({
+) => {
+  const imageContents: ChatCompletionContentPart[] = base64Images.map(
+    (base64Image) => ({
+      type: 'image_url',
+      image_url: { url: `data:image/jpeg;base64,${base64Image}` },
+    })
+  )
+  return await openai.chat.completions.create({
     model,
     messages: [
       {
         role: 'user',
-        content: [
-          { type: 'text', text: prompt },
-          {
-            type: 'image_url',
-            image_url: { url: `data:image/jpeg;base64,${base64Image}` },
-          },
-        ],
+        content: [{ type: 'text', text: prompt }, ...imageContents],
       },
     ],
     max_tokens: 600,
   })
+}
 
 export const getImageGeneration = async (
   prompt: string,

@@ -13,11 +13,11 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[] | string>([])
   const [loading, setLoading] = useState(false)
 
-  useChatMessages(setMessages, setLoading);
+  useChatMessages(setMessages, setLoading)
 
   const {
     input,
-    selectedImageURL,
+    selectedImageURLs,
     handleImageChange,
     handleTextChange,
     handleSubmit,
@@ -53,15 +53,17 @@ export default function Chat() {
       )}
       {messages.length > 0 && (
         <>
-          {selectedImageURL && (
-            <Image
-              src={selectedImageURL}
-              alt="Selected Image"
-              width={512}
-              height={512}
-              className="selected-image my-4"
-            />
-          )}
+          {selectedImageURLs.length > 0 &&
+            selectedImageURLs.map((url, index) => (
+              <Image
+                key={index}
+                src={url}
+                alt={`Selected Image ${index + 1}`}
+                width={256}
+                height={256}
+                className="selected-image my-4"
+              />
+            ))}
           <TextResult messages={messages} />
         </>
       )}

@@ -8,24 +8,27 @@ export default function useChatForm(
   setLoading: Dispatch<SetStateAction<boolean>>
 ) {
   const [input, setInput] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [selectedImageURL, setSelectedImageURL] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [selectedImageURLs, setSelectedImageURLs] = useState<string[]>([])
   const { user } = useUser()
 
   const handleImageChange = (e: FormEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement
-    const file = fileInput.files?.[0]
-    if (file) {
-      const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif']
+    const files = Array.from(fileInput.files || [])
+
+    const allowedExtensions = ['.png', '.jpeg', '.jpg', '.webp', '.gif']
+    const validFiles = files.filter((file) => {
       const fileExtension = file.name.split('.').pop()?.toLowerCase()
-      if (allowedExtensions.includes(`.${fileExtension}`)) {
-        setSelectedFile(file)
-      } else {
-        alert(
-          'Invalid file type. Please select a PNG, JPEG, WEBP, or non-animated GIF file.'
-        )
-        fileInput.value = ''
-      }
+      return allowedExtensions.includes(`.${fileExtension}`)
+    })
+
+    if (validFiles.length !== files.length) {
+      alert(
+        'Some files have invalid types. Please select PNG, JPEG, WEBP, or non-animated GIF files only.'
+      )
+      fileInput.value = ''
+    } else {
+      setSelectedFiles(validFiles)
     }
   }
 
@@ -37,11 +40,15 @@ export default function useChatForm(
     event.preventDefault()
     setLoading(true)
     const formData = new FormData()
-    if (selectedFile) {
-      formData.append('file', selectedFile)
+    if (selectedFiles) {
+      selectedFiles.forEach((file, index) => {
+        formData.append(`file${index}`, file)
+      })
     }
+
     formData.append('prompt', input)
     formData.append('user', user?.email || '')
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -55,8 +62,11 @@ export default function useChatForm(
           new Error(`Request failed with status ${response.status}`)
         )
       }
-      if (selectedFile) {
-        setSelectedImageURL(URL.createObjectURL(selectedFile))
+
+      if (selectedFiles) {
+        setSelectedImageURLs(
+          selectedFiles.map((file) => URL.createObjectURL(file))
+        )
       }
 
       setMessages(
@@ -71,17 +81,16 @@ export default function useChatForm(
         fileInput.value = ''
       }
     } catch (error: any) {
-      // Consider implementing your own error handling logic here
       console.error(error)
       alert(error.message)
     }
     setLoading(false)
-    setSelectedFile(null)
+    setSelectedFiles([])
   }
 
   return {
     input,
-    selectedImageURL,
+    selectedImageURLs,
     handleImageChange,
     handleTextChange,
     handleSubmit,

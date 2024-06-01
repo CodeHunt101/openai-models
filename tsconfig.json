@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -18,9 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "module": "esnext"
   },
@@ -28,9 +22,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/api/audios.ts"
-, "pages/api/auth/[auth0]/route.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "pages/api/audios.ts",
+    "pages/api/auth/[auth0]/route.js"
+  ],
+  "exclude": ["node_modules"]
 }
