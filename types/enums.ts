@@ -1,4 +1,5 @@
 export enum ChatCompletionModel {
+  GPT_5 = 'gpt-5.1',
   GPT_4_O = 'gpt-4o',
   GPT_4_0125_PREVIEW = 'gpt-4-0125-preview',
   GPT_4_1106_PREVIEW = 'gpt-4-1106-preview',
@@ -22,7 +23,7 @@ export enum ImageGenerationModel {
 }
 
 export enum AudioTranscriptionModel {
-  WHISPER_1 = 'whisper-1',
+  GPT_4_O_MINI_TRANSCRIBE = 'gpt-4o-mini-transcribe',
 }
 
 export enum FileType {

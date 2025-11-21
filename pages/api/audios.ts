@@ -29,14 +29,15 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
 
   form.parse(req, async (err, _fields, files) => {
     if (err) {
-      console.log(err)
-      return
+      return res.status(500).json({ error: { message: err.message } })
     }
     const uploadedFile = files.file
-    if (!uploadedFile) return
+    if (!uploadedFile) {
+      return res.status(400).json({ error: { message: 'No file uploaded' } })
+    }
 
     const uploadedFileValidity = isUploadedFileValid(uploadedFile, res)
-    if (!uploadedFileValidity) return
+        if (!uploadedFileValidity) return
 
     const originalAudioPath = uploadedFile[0].filepath
 
@@ -69,7 +70,7 @@ export default function audios(req: NextApiRequest, res: NextApiResponse) {
 
       const audioTranscription = await getAudioTranscription(
         audioFile,
-        AudioTranscriptionModel.WHISPER_1,
+        AudioTranscriptionModel.GPT_4_O_MINI_TRANSCRIBE,
         openai
       )
 
