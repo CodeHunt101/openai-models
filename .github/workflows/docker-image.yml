@@ -20,6 +20,8 @@ jobs:
           echo AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }} >> .env.local
           echo AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .env.local
           echo AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} >> .env.local
+          echo DEEPSEEK_BASE_URL=${{ secrets.DEEPSEEK_BASE_URL }} >> .env.local
+          echo DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }} >> .env.local
       - name: Build the Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/openai-models:latest --platform linux/amd64 .
       - name: Log in to Docker Hub

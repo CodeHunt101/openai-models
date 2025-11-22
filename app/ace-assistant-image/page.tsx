@@ -1,6 +1,8 @@
+'use client';
+
 import { FormEvent, useEffect, useState } from 'react'
 import TextResult from '@/components/TextResult'
-import { Message } from '../../types/types'
+import { Message } from '@/types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { submitRequest } from '@/utils/client'
 import { SubmitButton } from '@/components/SubmitButton'

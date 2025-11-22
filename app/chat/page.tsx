@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from 'react'
 import TextResult from '@/components/TextResult'
 import Image from 'next/image'
-import { Message } from '../../types/types'
+import { Message } from '@/types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import ChatForm from './ChatForm'
 import { Loading } from '@/components/Loading'
@@ -46,12 +48,12 @@ export default function Chat() {
     <div className="flex flex-col items-center mt-5">
       <div className="badge badge-primary text-lg p-5">Chat</div>
       <p>Images will not be saved</p>
-      {messages.length > 0 && (
+      {typeof messages !== 'string' && messages.length > 0 && (
         <button onClick={handleNewThread} className="btn btn-accent my-2">
           Start New Thread
         </button>
       )}
-      {messages.length > 0 && (
+      {typeof messages !== 'string' && messages.length > 0 && (
         <>
           {selectedImageURLs.length > 0 &&
             selectedImageURLs.map((url, index) => (
@@ -67,6 +69,7 @@ export default function Chat() {
           <TextResult messages={messages} />
         </>
       )}
+      {typeof messages === 'string' && <div className="alert alert-error">{messages}</div>}
       {loading && <Loading />}
       <ChatForm
         input={input}

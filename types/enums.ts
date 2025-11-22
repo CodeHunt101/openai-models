@@ -15,6 +15,8 @@ export enum ChatCompletionModel {
   GPT_3_5_TURBO_0301 = 'gpt-3.5-turbo-0301',
   GPT_3_5_TURBO_0613 = 'gpt-3.5-turbo-0613',
   GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
+  DEEPSEEK_REASONER = 'deepseek-reasoner',
+  DEEPSEEK_CHAT = 'deepseek-chat',
 }
 
 export enum ImageGenerationModel {

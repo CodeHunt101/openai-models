@@ -1,3 +1,5 @@
+'use client';
+
 import { FormEvent, useState } from 'react'
 import TextResult from '@/components/TextResult'
 import { Loading } from '@/components/Loading'

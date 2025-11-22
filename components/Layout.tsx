@@ -1,8 +1,10 @@
+'use client'
+
 import type { ReactNode } from 'react'
 import SwitchTheme from '../components/SwitchTheme'
-import Logout from '@/pages/logout'
+import Logout from '@/components/Logout'
 import { useUser } from '@auth0/nextjs-auth0/client'
-import Login from '@/pages/login'
+import Login from '@/components/Login'
 import Image from 'next/image'
 import { Loading } from '../components/Loading'
 import NavBarModels from '../components/NavBarModels'

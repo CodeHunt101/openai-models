@@ -11,7 +11,7 @@ import {
 import { NextApiResponse } from 'next'
 import { ChatCompletionModel } from '@/types/enums'
 import { ChatCompletionMessageParam } from 'openai/resources'
-import { messagesWithUser, updateMessagesWithUser } from '@/pages/api/chat'
+import { messagesWithUser, updateMessagesWithUser } from '@/utils/store'
 import {
   getChatCompletion,
   getChatCompletionWithVisuals,
