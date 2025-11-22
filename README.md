@@ -1,4 +1,4 @@
-A personal project where I utilise the main OpenAI API premium models. <b>Calling the API is way less pricey than paying for ChatGPT premium!</b>
+A personal project where I utilise the main OpenAI and Deepseek API premium models. <b>Calling the API is way less pricey than paying for premium subscriptions!</b>
 
 Since this is a paid API, if you would like access, please email me at `haroldtm55@gmail.com`, and I'll grant you free access.
 
