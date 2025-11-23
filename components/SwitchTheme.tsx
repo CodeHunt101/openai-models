@@ -1,32 +1,37 @@
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+import { useTheme } from 'next-themes'
+import { Button } from '@/components/ui/button'
 
 const SwitchTheme = () => {
-  const [theme, setTheme] = useState(() => {
-    const storedTheme =
-      typeof window !== 'undefined' && localStorage.getItem('theme')
-    return storedTheme ? storedTheme : 'cupcake'
-  })
+  const { setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  if (typeof window !== 'undefined') {
-    window.localStorage.setItem('theme', theme)
-    document.documentElement.setAttribute('data-theme', theme)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" disabled>
+        <FontAwesomeIcon icon={faSun} className="text-xl opacity-0" />
+      </Button>
+    )
   }
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'cupcake' ? 'forest' : 'cupcake'))
-    document.documentElement.setAttribute('data-theme', theme)
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
   }
 
   return (
-    <button className="btn btn-circle" onClick={toggleTheme}>
-      {theme === 'cupcake' ? (
-        <FontAwesomeIcon icon={faSun} />
+    <Button variant="ghost" size="icon" onClick={toggleTheme}>
+      {resolvedTheme === 'dark' ? (
+        <FontAwesomeIcon icon={faSun} className="text-xl" />
       ) : (
-        <FontAwesomeIcon icon={faMoon} />
+        <FontAwesomeIcon icon={faMoon} className="text-xl" />
       )}
-    </button>
+    </Button>
   )
 }
 

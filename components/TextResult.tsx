@@ -1,10 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import { Message } from '@/types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
 
 type TextResultProps = {
   messages: Message[] | string
@@ -12,7 +16,6 @@ type TextResultProps = {
 
 const TextResult = ({ messages }: TextResultProps) => {
   const assistantRef = useRef<HTMLDivElement>(null)
-  const [tooltipMessage, setTooltipMessage] = useState<string | null>(null)
 
   const fallbackCopyTextToClipboard = (text: string) => {
     const textArea = document.createElement('textarea')
@@ -24,11 +27,14 @@ const TextResult = ({ messages }: TextResultProps) => {
 
     try {
       const successful = document.execCommand('copy')
-      const msg = successful ? 'Copied to clipboard' : 'Unable to copy'
-      setTooltipMessage(msg)
+      if (successful) {
+        toast.success('Copied to clipboard')
+      } else {
+        toast.error('Unable to copy')
+      }
     } catch (err) {
       console.error('Fallback: Unable to copy', err)
-      setTooltipMessage('Failed to copy to clipboard')
+      toast.error('Failed to copy to clipboard')
     }
 
     document.body.removeChild(textArea)
@@ -44,99 +50,94 @@ const TextResult = ({ messages }: TextResultProps) => {
       navigator.clipboard
         .writeText(textToCopy)
         .then(() => {
-          setTooltipMessage('Copied to clipboard')
+          toast.success('Copied to clipboard')
         })
         .catch((err) => {
           console.error('Unable to copy text to clipboard', err)
           fallbackCopyTextToClipboard(textToCopy)
         })
     }
-    setTimeout(() => setTooltipMessage(null), 2000)
   }
 
   if (Array.isArray(messages)) {
     return (
       <>
         {messages.map(({ user, assistant }, index) => (
-          <div
+          <Card
             key={index}
-            className="card my-2 m-auto lg:w-2/3 shadow-lg self-start bg-primary"
+            className="my-4 m-auto lg:w-2/3 shadow-lg self-start"
           >
-            <div className="card-body">
-              <div className="my-1">
-                <kbd className="kbd kbd-md">You</kbd>
-                <p id="user-prompt" className="my-1 ml-1 text-primary-content">
+            <CardContent className="p-6">
+              <div className="my-2">
+                <Badge variant="secondary" className="text-sm mb-2">You</Badge>
+                <p id="user-prompt" className="ml-1 mb-4">
                   {user}
                 </p>
               </div>
-              <div className="my-1">
-                <kbd className="kbd kbd-md">Assistant</kbd>
+              <div className="my-2">
+                <Badge variant="default" className="text-sm mb-2">Assistant</Badge>
                 <div
                   id="asistant-response"
-                  className="prose prose-neutral ml-1 max-w-fit"
+                  className="prose prose-neutral dark:prose-invert ml-1 max-w-fit"
                   ref={assistantRef}
                 >
                   <ReactMarkdown
-                    className="text-primary-content"
                     remarkPlugins={[remarkGfm, remarkBreaks]}
                   >
                     {assistant}
                   </ReactMarkdown>
                 </div>
-                <div className="flex flex-row-reverse">
-                  <div className="tooltip" data-tip={tooltipMessage}>
-                    <button
-                      onClick={copyToClipboard}
-                      className="btn btn-square btn-outline border-primary bg-neutral-content hover:bg-neutral-content hover:border-neutral-content"
-                    >
-                      <FontAwesomeIcon
-                        className="text-primary-content"
-                        icon={faClipboard}
-                      />
-                    </button>
-                  </div>
+                <div className="flex flex-row-reverse mt-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={copyToClipboard}
+                    title="Copy to clipboard"
+                  >
+                    <FontAwesomeIcon
+                      icon={faClipboard}
+                    />
+                  </Button>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </>
     )
   }
 
   return (
-    <div className="card my-2 m-auto lg:w-2/3 shadow-lg self-start bg-primary">
-      <div className="card-body">
-        <div className="my-1">
-          <kbd className="kbd kbd-md">Assistant</kbd>
+    <Card className="my-4 m-auto lg:w-2/3 shadow-lg self-start">
+      <CardContent className="p-6">
+        <div className="my-2">
+          <Badge variant="default" className="text-sm mb-2">Assistant</Badge>
           <div
             id="asistant-response"
-            className="prose prose-neutral ml-1 max-w-fit"
+            className="prose prose-neutral dark:prose-invert ml-1 max-w-fit"
             ref={assistantRef}
           >
             <ReactMarkdown
-              className="text-primary-content"
               remarkPlugins={[remarkGfm, remarkBreaks]}
             >
               {messages}
             </ReactMarkdown>
           </div>
-          <div className="flex flex-row-reverse">
-            <div className="tooltip" data-tip={tooltipMessage}>
-              <button
-                onClick={copyToClipboard}
-                className="btn btn-square btn-outline border-primary bg-neutral-content hover:bg-neutral-content hover:border-neutral-content"
-              >
-                <FontAwesomeIcon
-                  className="text-primary-content"
-                  icon={faClipboard}
-                />
-              </button>
-            </div>
+          <div className="flex flex-row-reverse mt-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={copyToClipboard}
+              title="Copy to clipboard"
+            >
+              <FontAwesomeIcon
+                icon={faClipboard}
+              />
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

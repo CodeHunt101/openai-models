@@ -1,5 +1,5 @@
 import { FileInput } from '@/components/FileInput'
-import { SubmitButton } from '@/components/SubmitButton'
+import SubmitButton from '@/components/SubmitButton'
 import { FileType } from '@/types/enums'
 import { FormEvent } from 'react'
 
@@ -17,16 +17,17 @@ const AudioForm = ({
   <form
     method="post"
     onSubmit={onSubmit}
-    className="form-control w-full max-w-lg"
+    className="w-full max-w-lg space-y-4"
     encType="multipart/form-data"
   >
-    <FileInput
-      fileType={FileType.AUDIO}
-      onChange={onAudioChange}
-      style={{ marginAuto: true }}
-    />
-    <label className="label"></label>
-    <SubmitButton title="Generate transcript" disabled={loading} />
+    <div className="grid w-full items-center gap-1.5">
+      <FileInput
+        fileType={FileType.AUDIO}
+        onChange={onAudioChange}
+        style={{ marginAuto: true }}
+      />
+    </div>
+    <SubmitButton loading={loading} />
   </form>
 )
 

@@ -1,11 +1,10 @@
+import { Button } from '@/components/ui/button'
+
 export default function Login() {
   return (
-    // eslint-disable-next-line @next/next/no-html-link-for-pages
-    <a
-      href="/api/auth/login"
-      className="inline-flex text-white items-center px-6 py-3 font-medium bg-rose-500 rounded-lg hover:opacity-75"
-    >
-      Log in
-    </a>
+    <Button asChild className="bg-rose-500 hover:bg-rose-600 text-white">
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a href="/api/auth/login">Log in</a>
+    </Button>
   )
 }

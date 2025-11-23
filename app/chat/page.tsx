@@ -9,6 +9,9 @@ import ChatForm from './ChatForm'
 import { Loading } from '@/components/Loading'
 import useChatMessages from './hooks/useChatMessages'
 import useChatForm from './hooks/useChatForm'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function Chat() {
   const { user } = useUser()
@@ -45,13 +48,13 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col items-center mt-5">
-      <div className="badge badge-primary text-lg p-5">Chat</div>
-      <p>Images will not be saved</p>
+    <div className="flex flex-col items-center mt-5 space-y-4">
+      <Badge variant="default" className="text-lg p-2 px-4">Chat</Badge>
+      <p className="text-muted-foreground">Images will not be saved</p>
       {typeof messages !== 'string' && messages.length > 0 && (
-        <button onClick={handleNewThread} className="btn btn-accent my-2">
+        <Button onClick={handleNewThread} variant="secondary" className="my-2">
           Start New Thread
-        </button>
+        </Button>
       )}
       {typeof messages !== 'string' && messages.length > 0 && (
         <>
@@ -63,13 +66,17 @@ export default function Chat() {
                 alt={`Selected Image ${index + 1}`}
                 width={256}
                 height={256}
-                className="selected-image my-4"
+                className="selected-image my-4 rounded-lg shadow-md"
               />
             ))}
           <TextResult messages={messages} />
         </>
       )}
-      {typeof messages === 'string' && <div className="alert alert-error">{messages}</div>}
+      {typeof messages === 'string' && (
+        <Alert variant="destructive">
+          <AlertDescription>{messages}</AlertDescription>
+        </Alert>
+      )}
       {loading && <Loading />}
       <ChatForm
         input={input}

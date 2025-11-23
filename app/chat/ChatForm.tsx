@@ -1,8 +1,9 @@
 import { FileInput } from '@/components/FileInput'
-import { SubmitButton } from '@/components/SubmitButton'
-import { TextArea } from '@/components/TextArea'
+import SubmitButton from '@/components/SubmitButton'
+import TextArea from '@/components/TextArea'
 import { FileType } from '@/types/enums'
 import { FormEvent } from 'react'
+import { Label } from '@/components/ui/label'
 
 type ChatFormProps = {
   input: string
@@ -22,17 +23,16 @@ const ChatForm = ({
   <form
     method="post"
     onSubmit={handleSubmit}
-    className="form-control w-full max-w-lg"
+    className="w-full max-w-lg space-y-4"
     encType="multipart/form-data"
   >
-    <label className="label">
-      <span className="label-text">Enter your prompt</span>
-    </label>
-    <TextArea input={input} onChange={onTextChange} />
+    <div className="grid w-full items-center gap-1.5">
+      <Label>Enter your prompt</Label>
+      <TextArea input={input} onChange={onTextChange} />
+    </div>
     <FileInput fileType={FileType.IMAGE} onChange={onImageChange} />
-    <label className="label"></label>
     <SubmitButton
-      title="Generate response"
+      loading={loading}
       disabled={loading || input.length < 2}
     />
   </form>

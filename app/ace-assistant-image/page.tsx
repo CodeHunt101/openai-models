@@ -5,11 +5,14 @@ import TextResult from '@/components/TextResult'
 import { Message } from '@/types/types'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { submitRequest } from '@/utils/client'
-import { SubmitButton } from '@/components/SubmitButton'
+import SubmitButton from '@/components/SubmitButton'
 import { FileInput } from '@/components/FileInput'
 import { FileType } from '@/types/enums'
 import { Loading } from '@/components/Loading'
 import Image from 'next/image'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 
 export default function AceAssistantImage() {
   const [loading, setLoading] = useState(false)
@@ -135,14 +138,14 @@ export default function AceAssistantImage() {
   }
 
   return (
-    <div className="flex flex-col items-center mt-5">
-      <div className="badge badge-primary text-lg p-5">ACE Assistant Image</div>
-      <p>Images will not be saved</p>
-      <p>Upload an Google ACE exam question and it will give you the answer</p>
+    <div className="flex flex-col items-center mt-5 space-y-4">
+      <Badge variant="default" className="text-lg p-2 px-4">ACE Assistant Image</Badge>
+      <p className="text-muted-foreground">Images will not be saved</p>
+      <p className="text-center">Upload an Google ACE exam question and it will give you the answer</p>
       {messages?.length > 0 && (
-        <button onClick={handleNewThread} className="btn btn-accent my-2">
+        <Button onClick={handleNewThread} variant="secondary" className="my-2">
           Start New Thread
-        </button>
+        </Button>
       )}
       {loading && <Loading />}
       {messages?.length > 0 && (
@@ -153,7 +156,7 @@ export default function AceAssistantImage() {
               alt="Selected Image"
               width={512}
               height={512}
-              className="selected-image my-4"
+              className="selected-image my-4 rounded-lg shadow-md"
             />
           )}
           <TextResult messages={messages} />
@@ -162,19 +165,18 @@ export default function AceAssistantImage() {
       <form
         method="post"
         onSubmit={onSubmit}
-        className="form-control w-full max-w-lg"
+        className="w-full max-w-lg space-y-4"
         encType="multipart/form-data"
       >
-        <label className="label">
-          <span className="label-text">Enter your prompt</span>
-        </label>
-        <FileInput
-          fileType={FileType.IMAGE}
-          onChange={onImageChange}
-          style={{ marginAuto: true }}
-        />
-        <label className="label"></label>
-        <SubmitButton title="Generate response" disabled={loading} />
+        <div className="grid w-full items-center gap-1.5">
+          <Label>Enter your prompt</Label>
+          <FileInput
+            fileType={FileType.IMAGE}
+            onChange={onImageChange}
+            style={{ marginAuto: true }}
+          />
+        </div>
+        <SubmitButton loading={loading} />
       </form>
     </div>
   )

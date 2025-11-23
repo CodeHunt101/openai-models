@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Form from '@/components/Form'
 import { submitRequest } from '@/utils/client'
 import { Loading } from '@/components/Loading'
+import { Badge } from '@/components/ui/badge'
 
 export default function Images() {
   const [input, setInput] = useState('')
@@ -39,8 +40,8 @@ export default function Images() {
   ) => setInput((e.target as HTMLFormElement).value)
 
   return (
-    <div className="flex flex-col items-center mt-5">
-      <div className="badge badge-primary text-lg p-5">Create Image</div>
+    <div className="flex flex-col items-center mt-5 space-y-4">
+      <Badge variant="default" className="text-lg p-2 px-4">Create Image</Badge>
       <Form
         input={input}
         onChange={handleChange}
@@ -54,7 +55,7 @@ export default function Images() {
           {result.map((image, idx) => (
             <Image
               key={idx}
-              className="max-w-md m-5"
+              className="max-w-md m-5 rounded-lg shadow-md"
               alt={'image'}
               src={image.url}
               width={1024}

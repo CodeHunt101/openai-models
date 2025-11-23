@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const Footer = () => (
-  <footer className="text-center">
+  <footer className="text-center mt-10">
     <hr />
     <p className="text-center py-5">
       Crafted by{' '}

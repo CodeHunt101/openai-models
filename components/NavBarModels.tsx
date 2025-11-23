@@ -4,7 +4,7 @@ import { MenuElement } from './MenuElement'
 
 const NavBarModels = () => {
   return (
-    <ul className="menu bg-base-100 p-2 rounded-box flex flex-row justify-center">
+    <nav className="flex flex-wrap justify-center gap-2 p-2 rounded-lg">
       <MenuElement icon={faComments} route="/chat" title="Chats" />
       <MenuElement
         icon={regularFaImages}
@@ -22,7 +22,7 @@ const NavBarModels = () => {
         route="/ace-assistant-image"
         title="ACE Assistant Image"
       />
-    </ul>
+    </nav>
   )
 }
 

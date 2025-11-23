@@ -1,6 +1,8 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { TextArea } from './TextArea'
-import { SubmitButton } from './SubmitButton'
+import TextArea from './TextArea'
+import SubmitButton from './SubmitButton'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 type FormProps = {
   input: string
@@ -17,28 +19,23 @@ const Form = ({ input, onChange, onSubmit, loading }: FormProps) => {
   }, [])
 
   return (
-    <form onSubmit={onSubmit} className="form-control w-full max-w-lg">
-      <label className="label">
-        <span className="label-text">Enter your prompt</span>
-      </label>
-      {path === '/audios' ? (
-        <input
-          value={input}
-          onChange={onChange}
-          type={path === '/audios' ? 'file' : 'text'}
-          placeholder="Type here"
-          className={
-            path === '/audios'
-              ? 'file-input w-full max-w-xs'
-              : 'input input-bordered w-full'
-          }
-        />
-      ) : (
-        <TextArea input={input} onChange={onChange} />
-      )}
-      <label className="label"></label>
+    <form onSubmit={onSubmit} className="w-full max-w-lg space-y-4">
+      <div className="grid w-full items-center gap-1.5">
+        <Label>Enter your prompt</Label>
+        {path === '/audios' ? (
+          <Input
+            value={input}
+            onChange={onChange}
+            type="file"
+            placeholder="Type here"
+            className="w-full max-w-xs cursor-pointer"
+          />
+        ) : (
+          <TextArea input={input} onChange={onChange} />
+        )}
+      </div>
       <SubmitButton
-        title="Generate response"
+        loading={loading}
         disabled={loading || input.length < 2}
       />
     </form>

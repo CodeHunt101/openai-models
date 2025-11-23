@@ -1,5 +1,6 @@
 import { FileFormat, FileType } from '@/types/enums'
 import { FormEvent } from 'react'
+import { Input } from '@/components/ui/input'
 
 type FileInputProps = {
   fileType: FileType
@@ -10,11 +11,11 @@ type FileInputProps = {
 }
 
 export const FileInput = ({ fileType, onChange, style }: FileInputProps) => (
-  <input
+  <Input
     type="file"
     id="file-input"
     name={fileType}
-    className={`file-input file-input-bordered w-full max-w-xs ${
+    className={`w-full max-w-xs cursor-pointer ${
       style?.marginAuto ? 'm-auto' : 'm-0'
     }`}
     accept={fileType === FileType.IMAGE ? FileFormat.IMAGE : FileFormat.AUDIO}
